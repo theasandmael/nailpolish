@@ -265,27 +265,7 @@ a { color: var(--accent); }
 "use strict";
 /* ---------- tiny helpers ---------- */
 const $ = (s, r = document) => r.querySelector(s);
-function h(tag, attrs, ...kids) {
-  const el = document.createElement(tag);
-  if (attrs) for (const [k, v] of Object.entries(attrs)) {
-    if (v == null || v === false) continue;
-    if (k === "class") el.className = v;
-    else if (k === "style") el.style.cssText = v;
-    else if (k.startsWith("on")) el.addEventListener(k.slice(2), v);
-    else if (v === true) el.setAttribute(k, "");
-    else el.setAttribute(k, v);
-  }
-  for (const kid of kids.flat()) {
-    if (kid == null || kid === false) continue;
-    el.append(kid.nodeType ? kid : document.createTextNode(String(kid)));
-  }
-  return el;
-}
-function svg(inner, cls) {
-  const t = document.createElement("template");
-  t.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"${cls ? ` class="${cls}"` : ""} aria-hidden="true">${inner}</svg>`;
-  return t.content.firstChild;
-}
+
 const ICON = {
   stash: '<path d="M12 3 3 8l9 5 9-5-9-5Z"/><path d="m3 13 9 5 9-5"/>',
   wishlist: '<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.600-7 10-7 10Z"/>',
@@ -335,33 +315,6 @@ const PSTATUS = { reg: "Regular", disc: "Discontinued", le: "Limited edition" };
 const MONEY = new Intl.NumberFormat(undefined, { style: "currency", currency: "USD" });
 const cmp = (a, b) => String(a).localeCompare(String(b), undefined, { numeric: true, sensitivity: "base" });
 
-function foldKey(t) {
-  return String(t).normalize("NFD").replace(/\p{M}/gu, "").toLowerCase().replace(/['\u2019]/g, "");
-}
-function hashtag(t) { return foldKey(t).replace(/[^\p{L}\p{N}]/gu, ""); }
-function countryText(raw) {
-  const v = (raw || "").trim(); if (!v) return null;
-  if (/^[A-Za-z]{2}$/.test(v)) {
-    const code = v.toUpperCase();
-    const flag = String.fromCodePoint(...[...code].map(c => 0x1F1E6 + c.charCodeAt(0) - 65));
-    let name = code; try { name = new Intl.DisplayNames(undefined, { type: "region" }).of(code) || code; } catch (e) {}
-    return `${flag} ${name}`;
-  }
-  return v;
-}
-function igUrl(raw) {
-  let v = (raw || "").trim(); if (!v) return null;
-  if (/^https?:/i.test(v)) return v;
-  if (/instagram\.com/i.test(v)) return "https://" + v.replace(/^\/+/, "");
-  v = v.replace(/^[@/]+|\/+$/g, ""); return v ? "https://www.instagram.com/" + v : null;
-}
-function fbUrl(raw) {
-  let v = (raw || "").trim(); if (!v) return null;
-  if (/^https?:/i.test(v)) return v;
-  if (/facebook\.com|fb\.com/i.test(v)) return "https://" + v.replace(/^\/+/, "");
-  v = v.replace(/^\/+|\/+$/g, ""); return v ? "https://www.facebook.com/groups/" + v : null;
-}
-
 /* ---------- state ---------- */
 const state = {
   tab: "stash", dbMode: "brands", search: "", sort: "brand",
@@ -380,97 +333,13 @@ const store = {
 let BRANDS = [], P = [], BY_ID = new Map(), BY_KEY = new Map();
 const pkey = p => foldKey(p.brand.name + "|" + p.name);
 
-function matchesSearch(p, q) {
-  const words = foldKey(q).split(/\s+/).filter(Boolean);
-  return words.every(w => p.search.includes(w));
-}
-function releaseText(p) {
-  const m = p.month && p.month >= 1 && p.month <= 12
-    ? new Date(2000, p.month - 1, 1).toLocaleString(undefined, { month: "long" }) : null;
-  if (m && p.year) return `${m} ${p.year}`;
-  return m || (p.year ? String(p.year) : null);
-}
 const statusOf = p => state.lists.get(p.key) || null;
 
 /* ---------- lists: private per signed-in person, else this browser ---------- */
 const sync = { ready: false, db: null, ref: null, ok: false, name: "", timer: null, writing: false, dirty: false, skipEcho: 0 };
-function listsToDoc() {
-  const doc = { v: 1 };
-  for (const s of STATUS_ORDER) doc[s] = [];
-  for (const [key, s] of state.lists) { const p = BY_KEY.get(key); if (p && doc[s]) doc[s].push(`${p.id}|${p.brand.name}|${p.name}`); }
-  return doc;
-}
-function docToLists(doc) {
-  const m = new Map();
-  for (const s of STATUS_ORDER) for (const entry of (doc && doc[s]) || []) {
-    const [id, brand, ...rest] = String(entry).split("|");
-    const name = rest.join("|");
-    const byName = BY_KEY.get(foldKey(brand + "|" + name));
-    const byId = BY_ID.get(Number(id));
-    const p = byName || (byId && foldKey(byId.name) === foldKey(name) ? byId : null);
-    if (p) m.set(p.key, s);
-  }
-  return m;
-}
-function saveLocal() { store.set("lists:v1", JSON.stringify(listsToDoc())); }
-function loadLocal() { try { return docToLists(JSON.parse(store.get("lists:v1") || "null")); } catch (e) { return new Map(); } }
-function setStatus(p, status) {
-  if (status) state.lists.set(p.key, status); else state.lists.delete(p.key);
-  persist(); renderAll();
-}
-function persist() {
-  saveLocal();
-  if (!sync.ok) return;
-  sync.dirty = true;
-  clearTimeout(sync.timer);
-  sync.timer = setTimeout(flush, 500);
-}
-async function flush() {
-  if (sync.writing || !sync.dirty || !sync.ref) return;
-  sync.writing = true; sync.dirty = false;
-  try { await sync.ref.set(listsToDoc()); }
-  catch (e) {
-    if (e && (e.code === "invalid_argument" || e.code === "revoked" || e.code === "not_granted")) {
-      sync.ok = false; renderNotice();
-      toast("Your lists can't be saved to your account with this access, so they stay in this browser.");
-    } else { sync.dirty = true; setTimeout(flush, 2500); }
-  }
-  sync.writing = false;
-  if (sync.dirty) flush();
-}
-async function initAccount() {
-  let db = null, user = null;
-  try { [db, user] = await Promise.all([claude.use("db"), claude.use("user")]); } catch (e) {}
-  if (user) { try { const me = await user.me(); sync.name = me.name || ""; sync.avatar = me.avatarUrl; sync.id = me.id; } catch (e) {} }
-  if (!db || !sync.id) { sync.ready = true; renderNotice(); renderWho(); return; }
-  try {
-    sync.ref = db.doc(`data/users/${sync.id}/lists`);
-    const first = await sync.ref.get();
-    sync.ok = true;
-    if (first.exists) {
-      state.lists = docToLists(first.data());
-    } else {
-      const local = loadLocal();
-      if (local.size) { state.lists = local; sync.dirty = true; await flush(); toast("Moved the lists saved in this browser into your account."); }
-    }
-    sync.ref.onSnapshot(snap => {
-      if (!snap.exists || snap.metadata.hasPendingWrites) return;
-      const incoming = docToLists(snap.data());
-      let same = incoming.size === state.lists.size;
-      if (same) for (const [k, v] of incoming) if (state.lists.get(k) !== v) { same = false; break; }
-      if (!same && !sync.writing && !sync.dirty) { state.lists = incoming; saveLocal(); renderAll(); }
-    }, () => {});
-  } catch (e) { sync.ok = false; }
-  sync.ready = true; renderNotice(); renderWho(); renderAll();
-}
+
 
 /* ---------- theme ---------- */
-function applyTheme(mode) {
-  const root = document.documentElement;
-  if (mode === "light" || mode === "dark") root.setAttribute("data-theme", mode); else root.removeAttribute("data-theme");
-  const b = $("#themeBtn"); b.replaceChildren(ic(mode === "dark" ? "moon" : mode === "light" ? "sun" : "auto"));
-  b.title = "Theme: " + (mode || "system");
-}
 let themeMode = store.get("theme") || "system";
 applyTheme(themeMode);
 $("#themeBtn").addEventListener("click", () => {
