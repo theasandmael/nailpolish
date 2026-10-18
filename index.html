@@ -249,6 +249,7 @@ a { color: var(--accent); }
   <div class="top">
     <h1 class="brandmark">Polish Collection<small id="tagline">Stash, wishlist and a database of indie polish</small></h1>
     <span id="who"></span>
+    <button onclick="exportPolishDataAsZip()" class="export-btn">Download Backup (ZIP)</button>
     <button class="icon-btn" id="themeBtn" aria-label="Switch light or dark mode" title="Theme"></button>
   </div>
   <div id="notice"></div>
@@ -258,6 +259,7 @@ a { color: var(--accent); }
 </div>
 <div id="layer"></div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script>
 "use strict";
 /* ---------- tiny helpers ---------- */
