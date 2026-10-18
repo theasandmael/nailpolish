@@ -815,7 +815,7 @@ function brandHeader(b) {
 /* ---------- polish detail ---------- */
 function loadExtra() {
   if (state.extra || state.extraLoading) return state.extraLoading;
-  state.extraLoading = fetch("details.json").then(r => r.json()).then(d => { state.extra = d; renderContent(); }).catch(() => { state.extra = {}; });
+  state.extraLoading = fetch("brands.json").then(r => r.json()).then(d => { state.extra = d; renderContent(); }).catch(() => { state.extra = {}; });
   return state.extraLoading;
 }
 function photoUrls(p) {
@@ -975,7 +975,7 @@ async function exportCsv() {
 async function start() {
   state.lists = loadLocal();                  // placeholder until the catalog is read; re-resolved below
   let data;
-  try { data = await (await fetch("brands.json")).json(); }
+  try { data = await (await fetch("details.json")).json(); }
   catch (e) { $("#content").replaceChildren(h("div", { class: "empty" }, h("b", null, "The catalog didn't load"), "Reload the page to try again.")); return; }
   buildCatalog(data);
   state.catalog = true;
