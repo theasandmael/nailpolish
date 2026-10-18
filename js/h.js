@@ -1,4 +1,4 @@
-function h(tag, attrs, ...kids) {
+export function h(tag, attrs, ...kids) {
   const el = document.createElement(tag);
   if (attrs) for (const [k, v] of Object.entries(attrs)) {
     if (v == null || v === false) continue;

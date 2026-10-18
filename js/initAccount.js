@@ -1,4 +1,4 @@
-async function initAccount() {
+export async function initAccount() {
   let db = null, user = null;
   try { [db, user] = await Promise.all([claude.use("db"), claude.use("user")]); } catch (e) {}
   if (user) { try { const me = await user.me(); sync.name = me.name || ""; sync.avatar = me.avatarUrl; sync.id = me.id; } catch (e) {} }

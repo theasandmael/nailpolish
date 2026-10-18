@@ -1,4 +1,4 @@
-function docToLists(doc) {
+export function docToLists(doc) {
   const m = new Map();
   for (const s of STATUS_ORDER) for (const entry of (doc && doc[s]) || []) {
     const [id, brand, ...rest] = String(entry).split("|");

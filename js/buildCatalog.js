@@ -1,4 +1,4 @@
-function buildCatalog(data) {
+export function buildCatalog(data) {
   BRANDS = data.brands.map(b => ({ ...b, count: 0 }));
   
   // Create a brand lookup map by name

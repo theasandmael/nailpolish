@@ -1,4 +1,4 @@
-async function flush() {
+export async function flush() {
   if (sync.writing || !sync.dirty || !sync.ref) return;
   sync.writing = true; sync.dirty = false;
   try { await sync.ref.set(listsToDoc()); }

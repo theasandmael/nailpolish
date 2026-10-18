@@ -261,11 +261,8 @@ a { color: var(--accent); }
 <div id="layer"></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-<script src="js/applyTheme.js"></script>
-<script src="js/buildCatalog.js"></script>
-<script src="js/countryText.js"></script>
-<script src="js/docToLists.js"></script>
-<script src="js/exportPolishDataAsZip.js" defer></script>
+<script type="module" src="js/main.js"></script>
+
 <script>
 "use strict";
 /* ---------- tiny helpers ---------- */
@@ -837,7 +834,7 @@ async function exportCsv() {
 async function start() {
   state.lists = loadLocal();                  // placeholder until the catalog is read; re-resolved below
   let data;
-  try { data = await (await fetch("dbs/brands.json")).json(); }
+  try { data = await (await fetch("dbs/catalog.json")).json(); }
   catch (e) { $("#content").replaceChildren(h("div", { class: "empty" }, h("b", null, "The catalog didn't load"), "Reload the page to try again.")); return; }
   buildCatalog(data);
   state.catalog = true;

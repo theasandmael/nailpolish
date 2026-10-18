@@ -1,4 +1,4 @@
-function countryText(raw) {
+export function countryText(raw) {
   const v = (raw || "").trim(); if (!v) return null;
   if (/^[A-Za-z]{2}$/.test(v)) {
     const code = v.toUpperCase();

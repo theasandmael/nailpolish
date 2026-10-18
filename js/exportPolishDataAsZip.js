@@ -1,4 +1,4 @@
-async function exportPolishDataAsZip() {
+export async function exportPolishDataAsZip() {
   const zip = new JSZip();
 
   // Helper function to convert data (array of objects or raw string) to a CSV string

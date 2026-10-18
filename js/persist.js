@@ -1,4 +1,4 @@
-function persist() {
+export function persist() {
   saveLocal();
   if (!sync.ok) return;
   sync.dirty = true;
