@@ -378,20 +378,7 @@ const store = {
 /* ---------- catalog ---------- */
 let BRANDS = [], P = [], BY_ID = new Map(), BY_KEY = new Map();
 const pkey = p => foldKey(p.brand.name + "|" + p.name);
-function buildCatalog(data) {
-  BRANDS = data.brands.map(b => ({ ...b, count: 0 }));
-  P = data.polishes.map(r => {
-    const brand = BRANDS[r[1]]; brand.count++;
-    const p = { id: r[0], brand, name: r[2], collection: r[3], year: r[4], base: r[5], other: r[6], finishes: r[7],
-      ctype: r[8], price: r[9], stock: r[11], pstatus: r[12], image: r[13], url: r[14], dupes: r[15], month: r[16] };
-    p.search = foldKey(`${brand.name} ${p.name} ${p.collection || ""}`);
-    p.ppm = p.price && brand.bottle ? p.price / brand.bottle : null;
-    p.key = pkey(p);
-    return p;
-  });
-  BY_ID = new Map(P.map(p => [p.id, p]));
-  BY_KEY = new Map(P.map(p => [p.key, p]));
-}
+
 function matchesSearch(p, q) {
   const words = foldKey(q).split(/\s+/).filter(Boolean);
   return words.every(w => p.search.includes(w));
