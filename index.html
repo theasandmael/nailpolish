@@ -975,7 +975,7 @@ async function exportCsv() {
 async function start() {
   state.lists = loadLocal();                  // placeholder until the catalog is read; re-resolved below
   let data;
-  try { data = await (await fetch("catalog.json")).json(); }
+  try { data = await (await fetch("brands.json")).json(); }
   catch (e) { $("#content").replaceChildren(h("div", { class: "empty" }, h("b", null, "The catalog didn't load"), "Reload the page to try again.")); return; }
   buildCatalog(data);
   state.catalog = true;
