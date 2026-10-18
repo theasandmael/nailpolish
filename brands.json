@@ -1,0 +1,1057 @@
+{
+  "brands": [
+    {
+      "id": 1,
+      "brand": "10:02 Nails",
+      "nickname": "1002",
+      "bottle_size": 15.0,
+      "website": "https://www.1002nails.com/",
+      "logo": "https://static.wixstatic.com/media/430e45_816fa4f4365e42868b76a9972ccea14a~mv2.png",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 2,
+      "brand": "1422 Designs",
+      "nickname": "1422",
+      "bottle_size": 15.0,
+      "website": "https://www.1422designs.com/",
+      "logo": "https://images.squarespace-cdn.com/content/v1/657a0d060490a368f054dd31/fc5a51d8-967c-4abb-8fa6-04fba66d4451/1422+Designs.png",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 3,
+      "brand": "Ahmya Cosmetics",
+      "nickname": "Ahmya",
+      "bottle_size": 10.0,
+      "website": "https://www.ahmyacosmetics.co.uk/",
+      "logo": "https://www.ahmyacosmetics.co.uk/cdn/shop/files/776DD519-2F6F-4C10-A25D-01ED89B6E9D8.png",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 4,
+      "brand": "Alchemy Lacquers",
+      "nickname": "Alchemy",
+      "bottle_size": 12.5,
+      "website": "https://alchemylacquers.com/",
+      "logo": "https://alchemylacquers.com/cdn/shop/files/Favicon.png",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 5,
+      "brand": "All Mixed Up Lacquers",
+      "nickname": "All Mixed Up",
+      "bottle_size": 15.0,
+      "website": "https://all-mixed-up-lacquers.myshopify.com/",
+      "logo": "https://polishpickup.com/cdn/shop/files/all_mixed_up.jpg",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 6,
+      "brand": "Angry Harpy Polish",
+      "nickname": "Angry Harpy",
+      "bottle_size": 15.0,
+      "website": "https://angryharpypolish.com/",
+      "logo": "https://angryharpypolish.com/cdn/shop/files/IMG_6143.png",
+      "bgc": "#000000"
+    },
+    {
+      "id": 7,
+      "brand": "ANLAC",
+      "nickname": "ANLAC",
+      "bottle_size": 10.0,
+      "website": "https://awesomenailpolish.com/",
+      "logo": "anlac",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 8,
+      "brand": "Apocalypse Polish",
+      "nickname": "Apocalypse",
+      "bottle_size": 15.0,
+      "website": "https://apocalypsepolish.com/",
+      "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQI4ZLvG_SG79yn73r6PAtKZo6Sga-YaOei62xycAQfXA&s=10",
+      "bgc": "#000000"
+    },
+    {
+      "id": 9,
+      "brand": "Arcana Lacquer",
+      "nickname": "Arcana",
+      "bottle_size": 15.0,
+      "website": "https://arcanalacquer.com/",
+      "logo": "https://arcanalacquer.com/cdn/shop/files/arcanalogoNEWinverted.png",
+      "bgc": "#241e22"
+    },
+    {
+      "id": 10,
+      "brand": "Arclight Ivy",
+      "nickname": "Arclightivy",
+      "bottle_size": 13.0,
+      "website": "https://arclightivy.com/",
+      "logo": "https://arclightivy.com/wp-content/uploads/2026/04/cropped-arclightlogoWhite-01.png",
+      "bgc": "#000000"
+    },
+    {
+      "id": 11,
+      "brand": "Artie Mae Polish",
+      "nickname": "Artie Mae",
+      "bottle_size": 15.0,
+      "website": "https://artiemaepolish.com/",
+      "logo": "ArtieMae",
+      "bgc": "#f3cccb"
+    },
+    {
+      "id": 12,
+      "brand": "Atomic Polish",
+      "nickname": "Atomic",
+      "bottle_size": 15.0,
+      "website": "https://www.atomicpolish.com/",
+      "logo": "https://polishpickup.com/cdn/shop/files/atomic_polish_b5924fc4-bf11-48e3-b458-17bf8f8e49e6.jpg",
+      "bgc": "#fbfbfb"
+    },
+    {
+      "id": 13,
+      "brand": "Baroness X",
+      "nickname": "Baroness X",
+      "bottle_size": 15.0,
+      "website": "https://baronessx.com/",
+      "logo": "https://baronessx.com/cdn/shop/files/new_transparent_X_410x.png",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 14,
+      "brand": "BCB Lacquers",
+      "nickname": "BCB",
+      "bottle_size": 15.0,
+      "website": "https://bcblacquers.com/",
+      "logo": "https://bcblacquers.com/cdn/shop/files/thumbnail_180x@2x.png",
+      "bgc": "#121212"
+    },
+    {
+      "id": 15,
+      "brand": "Beaux Rêves Lacquer",
+      "nickname": "Beaux Reves",
+      "bottle_size": 12.0,
+      "website": "https://www.beauxreveslacquer.com/",
+      "logo": "https://www.beauxreveslacquer.com/cdn/shop/files/beaux-reves-gold_1-removebg-preview_73147dc6-fc3e-481d-8043-3f5b5cc3d234.png",
+      "bgc": "#f1f2ea"
+    },
+    {
+      "id": 16,
+      "brand": "Bee's Knees Lacquer",
+      "nickname": "BKL",
+      "bottle_size": 15.0,
+      "website": "https://www.beeskneeslacquer.com/",
+      "logo": "https://www.beeskneeslacquer.com/cdn/shop/files/logo_-_initials_-_white.png",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 17,
+      "brand": "Bluebird Lacquer",
+      "nickname": "Bluebird",
+      "bottle_size": 15.0,
+      "website": "https://www.bluebirdlacquer.com/",
+      "logo": "https://polishpickup.com/cdn/shop/files/bluebird_ceb2e180-ef2c-453f-b39a-f1b78548bf40.jpg",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 18,
+      "brand": "Broken Pixel Polish",
+      "nickname": "Broken Pixel ",
+      "bottle_size": 15.0,
+      "website": "https://brokenpixelpolish.com/",
+      "logo": "https://brokenpixelpolish.com/cdn/shop/files/BPP_Logo.png",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 19,
+      "brand": "By Dany Vianna",
+      "nickname": "BDV",
+      "bottle_size": 11.0,
+      "website": "https://bydanyvianna.com/",
+      "logo": "https://bydanyvianna.com/cdn/shop/files/logo-marrom-fundo-creme_180x.png",
+      "bgc": "#f4e9d6"
+    },
+    {
+      "id": 20,
+      "brand": "Cadillacquer",
+      "nickname": "Cadillaquer",
+      "bottle_size": 15.0,
+      "website": "https://www.color4nails.com/cat/cadillacquer/",
+      "logo": "https://polishpickup.com/cdn/shop/files/cadillacquer_7fd60c13-ce26-44cf-8421-2aa46d0317d4.png",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 21,
+      "brand": "Cameo Colours Lacquers",
+      "nickname": "Cameo Colours",
+      "bottle_size": 15.0,
+      "website": "https://www.cameocolourslacquers.com/",
+      "logo": "https://polishpickup.com/cdn/shop/files/cameo_cf6771de-5fab-4a9b-911e-07afa2717a64.jpg",
+      "bgc": "#fefefe"
+    },
+    {
+      "id": 22,
+      "brand": "Chamaeleon Nails",
+      "nickname": "Chamaeleon",
+      "bottle_size": 11.0,
+      "website": "https://www.chamaeleon-nails.com/en",
+      "logo": "https://www.chamaeleon-nails.com/storage/images/664B8642-1C89-4E44-B0E9-690664C36E63_1_201_a.jpeg",
+      "bgc": "#000000"
+    },
+    {
+      "id": 23,
+      "brand": "Cirque Colors",
+      "nickname": "Cirque",
+      "bottle_size": 11.0,
+      "website": "https://www.cirquecolors.com/",
+      "logo": "https://www.cirquecolors.com/cdn/shop/files/cirque-colors-main-logo.png",
+      "bgc": "#e6e6e6"
+    },
+    {
+      "id": 24,
+      "brand": "Clionadh Cosmetics",
+      "nickname": "Clionadh",
+      "bottle_size": 11.5,
+      "website": "https://clionadhcosmetics.com/",
+      "logo": "https://clionadhcosmetics.com/cdn/shop/files/Web-Logo_540x.jpg",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 25,
+      "brand": "Colores de Carol",
+      "nickname": "Colores de Carol",
+      "bottle_size": 15.0,
+      "website": "https://www.coloresdecarol.com/",
+      "logo": "https://assets.bigcartel.com/theme_images/155742453/Colores+de+Carol+Logo.png",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 26,
+      "brand": "Cracked Polish",
+      "nickname": "Cracked",
+      "bottle_size": 15.0,
+      "website": "https://crackedpolish.com/",
+      "logo": "cracked",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 27,
+      "brand": "Cupcake Polish",
+      "nickname": "Cupcake",
+      "bottle_size": 15.0,
+      "website": "https://www.cupcakepolish.com/",
+      "logo": "https://www.cupcakepolish.com/cdn/shop/files/cupcake_horizontal_pink_400x@2x.png",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 28,
+      "brand": "Cuticula",
+      "nickname": "Cuticula",
+      "bottle_size": 15.0,
+      "website": "https://shopcuticula.com/",
+      "logo": "https://polishpickup.com/cdn/shop/files/cuticula.png",
+      "bgc": "#000000"
+    },
+    {
+      "id": 29,
+      "brand": "Dam Nail Polish",
+      "nickname": "Dam",
+      "bottle_size": 15.0,
+      "website": "https://www.damnailpolish.com/",
+      "logo": "https://www.damnailpolish.com/cdn/shop/files/black_logo_label_-_color.png",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 30,
+      "brand": "Danglefoot Nail Polish",
+      "nickname": "Danglefoot",
+      "bottle_size": 12.0,
+      "website": "https://danglefootnailpolish.bigcartel.com/",
+      "logo": "https://polishpickup.com/cdn/shop/files/danglefoot.jpg",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 31,
+      "brand": "Daveen Lacquer",
+      "nickname": "Daveen",
+      "bottle_size": 15.0,
+      "website": "https://www.daveenlacquer.com/",
+      "logo": "https://static.wixstatic.com/media/85d406_5eea473ec4a646219ca6a25be8c08d63~mv2.png",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 32,
+      "brand": "Detour Lacquer",
+      "nickname": "Detour",
+      "bottle_size": 15.0,
+      "website": "https://detourlacquer.com/",
+      "logo": "https://detourlacquer.com/cdn/shop/files/Detour_Logo_-_White_on_Black.jpg",
+      "bgc": "#000000"
+    },
+    {
+      "id": 33,
+      "brand": "Dreamland Lacquer",
+      "nickname": "Dreamland",
+      "bottle_size": 15.0,
+      "website": "https://dreamlandlacquer.com/",
+      "logo": "https://dreamlandlacquer.com/cdn/shop/files/dreamland_logo_v2_transparent_bg.png",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 34,
+      "brand": "DRK Nails",
+      "nickname": "DRK",
+      "bottle_size": 11.0,
+      "website": "https://www.drknails.com/",
+      "logo": "https://www.drknails.com/cdn/shop/files/DG4D5miC_400x400_6073266a-e00c-411c-9f6e-6b0176a59398_540x.jpg",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 35,
+      "brand": "Elbe",
+      "nickname": "Elbe",
+      "bottle_size": 11.0,
+      "website": "https://www.elbepolish.com.br/",
+      "logo": "https://acdn-us.mitiendanube.com/stores/002/232/023/themes/common/logo-846189863-1732919081-d256f8b841c3bd95e63fb21edb133e7f1732919082-480-0.webp",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 36,
+      "brand": "Emily de Molly",
+      "nickname": "EDM",
+      "bottle_size": 12.0,
+      "website": "https://www.emilydemolly.com/",
+      "logo": "https://www.emilydemolly.com/cdn/shop/files/new_web_logo.jpg",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 37,
+      "brand": "Envy Lacquer",
+      "nickname": "Envy",
+      "bottle_size": 12.0,
+      "website": "https://envylacquer.myshopify.com/",
+      "logo": "https://polishpickup.com/cdn/shop/files/envy_lacquer.png",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 38,
+      "brand": "Ethereal Lacquer",
+      "nickname": "Ethereal",
+      "bottle_size": 15.0,
+      "website": "https://envylacquer.myshopify.com/",
+      "logo": "https://www.ethereallacquer.com/cdn/shop/files/50AE78E8-7902-42BC-AA88-7F68430C7C0F.png",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 39,
+      "brand": "F.U.N Lacquer",
+      "nickname": "FUN",
+      "bottle_size": 12.0,
+      "website": "https://funlacquer.com/",
+      "logo": "https://funlacquer.com/cdn/shop/files/01F0802B-BD78-41EB-B629-4E2B9B793896_350x@2x.png",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 40,
+      "brand": "Fancy Gloss Polish",
+      "nickname": "Fancy Gloss",
+      "bottle_size": 15.0,
+      "website": "https://fancyglosspolish.com/",
+      "logo": "https://fancyglosspolish.com/cdn/shop/files/fglogo_e98d5631-27ac-43e7-a1d5-6e086b4e99fa.png",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 41,
+      "brand": "Fauve Cosmetics",
+      "nickname": "Fauve",
+      "bottle_size": 15.0,
+      "website": "https://www.fauvecosmetics.com/",
+      "logo": "https://images.squarespace-cdn.com/content/v1/6620155ca4f5407033539404/7aa98182-28dd-4e2f-bf5b-834201eed344/fauve-cosmetics2.png",
+      "bgc": "#000000"
+    },
+    {
+      "id": 42,
+      "brand": "Finding Feathers Lacquer",
+      "nickname": "Finding Feathers",
+      "bottle_size": 15.0,
+      "website": "https://findingfeatherslacquer.com/",
+      "logo": "https://findingfeatherslacquer.com/cdn/shop/files/Fancy_FFL_Plain_Logo-removebg-preview.png",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 43,
+      "brand": "Firefly Lacquer",
+      "nickname": "Firefly",
+      "bottle_size": 15.0,
+      "website": "https://fireflylacquer.com/",
+      "logo": "https://fireflylacquer.com/cdn/shop/files/Fire_fly_vector_final-01.png",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 44,
+      "brand": "Garden Path Lacquers",
+      "nickname": "GPL",
+      "bottle_size": 12.0,
+      "website": "https://gardenpathlacquers.com/",
+      "logo": "https://gardenpathlacquers.com/cdn/shop/files/output-onlinepngtools_2_540x.png",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 45,
+      "brand": "Glam Polish",
+      "nickname": "Glam",
+      "bottle_size": 15.0,
+      "website": "https://glampolish.com.au/",
+      "logo": "https://polishpickup.com/cdn/shop/files/glam_polish.png",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 46,
+      "brand": "Glisten & Glow",
+      "nickname": "Glisten & Glow",
+      "bottle_size": 15.0,
+      "website": "https://www.glistenandglow.com/",
+      "logo": "https://assets.bigcartel.com/theme_images/138219702/Established+in+2010.png",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 47,
+      "brand": "Glitch Lacquer",
+      "nickname": "Glitch",
+      "bottle_size": 15.0,
+      "website": "https://glitchlacquer.com/",
+      "logo": "https://glitchlacquer.com/cdn/shop/files/SocialLogo.png",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 48,
+      "brand": "Good Knight Polish",
+      "nickname": "Good Knight",
+      "bottle_size": 15.0,
+      "website": "https://goodknightpolish.com/",
+      "logo": "https://goodknightpolish.com/cdn/shop/files/GoodKnightPolishLogo.png",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 49,
+      "brand": "Great Lakes Lacquer",
+      "nickname": "GLL",
+      "bottle_size": 15.0,
+      "website": "https://www.greatlakeslacquer.com/",
+      "logo": "https://www.greatlakeslacquer.com/cdn/shop/files/GreatLakesLacquer_logo_0f264670-670f-4ac8-9591-dd8ebb825f1a.png",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 50,
+      "brand": "Haunted Polish",
+      "nickname": "Haunted",
+      "bottle_size": 15.0,
+      "website": "https://hauntedpolish.com/",
+      "logo": "https://hauntedpolish.com/cdn/shop/files/IMG_2301.png",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 51,
+      "brand": "Hearts & Promises",
+      "nickname": "Hearts & Promises",
+      "bottle_size": 15.0,
+      "website": "https://www.heartsandpromises.com/",
+      "logo": "https://polishpickup.com/cdn/shop/files/hearts.png",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 52,
+      "brand": "Hit the Bottle Polishes",
+      "nickname": "Hit the Bottle",
+      "bottle_size": 9.0,
+      "website": "https://hitthebottlepolishes.com.au/",
+      "logo": "https://hitthebottlepolishes.com.au/cdn/shop/files/New_simplified_logos_PNG_black-01.png",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 53,
+      "brand": "Holo Taco",
+      "nickname": "Holo Taco",
+      "bottle_size": 12.0,
+      "website": "https://www.holotaco.com/",
+      "logo": "https://www.holotaco.com/cdn/shop/files/HT-Trademark-Logo-White.png",
+      "bgc": "#000000"
+    },
+    {
+      "id": 54,
+      "brand": "Holy Order of Perpetual Lacquer",
+      "nickname": "HOPL",
+      "bottle_size": 15.0,
+      "website": "https://www.holyorderofperpetuallacquer.com/",
+      "logo": "https://www.holyorderofperpetuallacquer.com/cdn/shop/files/PNG_New_Logo.png",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 55,
+      "brand": "Hoshiumi Beauty",
+      "nickname": "Hoshiumi",
+      "bottle_size": 15.0,
+      "website": "https://hoshiumi.com/",
+      "logo": "https://hoshiumi.com/cdn/shop/files/IMG_2471.jpg",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 56,
+      "brand": "Hula Moon",
+      "nickname": "Hula Moon",
+      "bottle_size": 15.0,
+      "website": "https://www.shophulamoon.com/",
+      "logo": "https://www.shophulamoon.com/cdn/shop/files/Hula_Moon_Logo_PNG.png",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 57,
+      "brand": "ILNP",
+      "nickname": "ILNP",
+      "bottle_size": 12.0,
+      "website": "https://www.ilnp.com/",
+      "logo": "ilnp",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 58,
+      "brand": "Indie by Patty Lopes",
+      "nickname": "Patty Lopes",
+      "bottle_size": 10.0,
+      "website": "https://www.color4nails.com/cat/indie-by-patty-lopes/",
+      "logo": "https://polishpickup.com/cdn/shop/files/indie_by_patty.jpg",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 59,
+      "brand": "Jen & Berries",
+      "nickname": "J&Berries",
+      "bottle_size": 12.5,
+      "website": "https://jandberries.com/",
+      "logo": "https://jandberries.com/cdn/shop/files/logo400.jpg",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 60,
+      "brand": "Jior Couture",
+      "nickname": "Jior",
+      "bottle_size": 12.0,
+      "website": "https://www.jiorcouture.com/",
+      "logo": "https://polishpickup.com/cdn/shop/files/jior_bbb74510-2254-47bd-be91-7a05dc37f00c.jpg",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 61,
+      "brand": "Kathleen & Co",
+      "nickname": "Kathleen & Co",
+      "bottle_size": 15.0,
+      "website": "https://kathleenandco.com/",
+      "logo": "https://kathleenandco.com/cdn/shop/files/kathleen-co-logo_975f1b81-bb41-4671-85d1-7ab0db51341b.png",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 62,
+      "brand": "KBShimmer",
+      "nickname": "KBS",
+      "bottle_size": 15.0,
+      "website": "https://www.kbshimmer.com/",
+      "logo": "https://woo.kbshimmer.com/wp-content/uploads/2025/09/logo.png",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 63,
+      "brand": "Lemming Lacquer",
+      "nickname": "Lemming",
+      "bottle_size": 15.0,
+      "website": "https://lemminglacquer.com/",
+      "logo": "https://lemminglacquer.com/cdn/shop/files/Lemming-Lacquer-Logo_for_ShipStation_540x.png",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 64,
+      "brand": "Lilypad Lacquer",
+      "nickname": "Lilypad",
+      "bottle_size": 12.0,
+      "website": "https://indiesdownunder.com.au/collections/lilypad-lacquer",
+      "logo": "https://cdn.shopify.com/s/files/1/0541/2870/5723/files/293303630_586896166126070_1157627351515160861_n_9d637e9a-6bf8-48ef-83b3-acbe28fcd275.jpg",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 65,
+      "brand": "Lūmen Nails",
+      "nickname": "Lumen",
+      "bottle_size": 15.0,
+      "website": "https://lumennails.com/",
+      "logo": "https://lumennails.com/cdn/shop/files/Untitled_design_22.png",
+      "bgc": "#000000"
+    },
+    {
+      "id": 66,
+      "brand": "Lurid Lacquer",
+      "nickname": "Lurid",
+      "bottle_size": 15.0,
+      "website": "https://luridlacquer.com/",
+      "logo": "https://luridlacquer.com/cdn/shop/files/LuridLacquerpng.png",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 67,
+      "brand": "LynB Designs",
+      "nickname": "LynB",
+      "bottle_size": 15.0,
+      "website": "https://lynbdesigns.store/",
+      "logo": "https://lynbdesigns.store/cdn/shop/files/checkout_logo_1_720x.png",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 68,
+      "brand": "Mango Lacquer",
+      "nickname": "Mango",
+      "bottle_size": 15.0,
+      "website": "https://mangolacquer.com/",
+      "logo": "https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=375,fit=crop/YD0EQ7qz7GTzbaKw/font-1-vJ9MHtTZXhH8Z6hv.png",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 69,
+      "brand": "MJ Lacquer",
+      "nickname": "MJ",
+      "bottle_size": 15.0,
+      "website": "https://mjlacquer.com/",
+      "logo": "https://mjlacquer.com/cdn/shop/files/MJLaquer_540x.jpg",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 70,
+      "brand": "Monarch Lacquer",
+      "nickname": "Monarch",
+      "bottle_size": 15.0,
+      "website": "https://monarchlacquer.com/",
+      "logo": "https://monarchlacquer.com/cdn/shop/files/Monarch-Lacquer-fa.gif",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 71,
+      "brand": "Moon Shine Mani",
+      "nickname": "MSM",
+      "bottle_size": 15.0,
+      "website": "https://moonshinemani.com/",
+      "logo": "https://moonshinemani.com/cdn/shop/files/image0.jpg",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 72,
+      "brand": "Mooncat",
+      "nickname": "Mooncat",
+      "bottle_size": 12.0,
+      "website": "https://www.mooncat.com/",
+      "logo": "https://www.mooncat.com/cdn/shop/files/logo.png",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 73,
+      "brand": "Moth & Moon Nails",
+      "nickname": "Moth & Moon",
+      "bottle_size": 15.0,
+      "website": "https://mothandmoonnails.com/",
+      "logo": "https://polishpickup.com/cdn/shop/files/moth_and_moon.jpg",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 74,
+      "brand": "Nailed It",
+      "nickname": "Nailed It",
+      "bottle_size": 15.0,
+      "website": "https://nailedithawaii.com/",
+      "logo": "https://nailedithawaii.com/cdn/shop/files/Copy_of_Copy_of_Untitled_20260224_192140_0000_360x.png",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 75,
+      "brand": "Night Owl Lacquer",
+      "nickname": "Night Owl",
+      "bottle_size": 15.0,
+      "website": "https://nightowllacquer.com/",
+      "logo": "https://nightowllacquer.com/cdn/shop/files/Moon_Logo_Square_177x@2x.png",
+      "bgc": "#000000"
+    },
+    {
+      "id": 76,
+      "brand": "Noodles Nail Polish",
+      "nickname": "Noodles",
+      "bottle_size": 15.0,
+      "website": "https://noodlesnailpolish.com/",
+      "logo": "https://noodlesnailpolish.com/cdn/shop/files/NoodlesNailPolishColor_360x.jpg",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 77,
+      "brand": "Nothing Basic",
+      "nickname": "NB",
+      "bottle_size": 11.0,
+      "website": "https://nothingbasicstore.com/",
+      "logo": "https://acdn-us.mitiendanube.com/stores/002/882/010/themes/common/logo-1767892789-1757101108-bded066e6a760b109f7c6933d744cbdd1757101108-480-0.webp",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 78,
+      "brand": "Opal Theory Polish",
+      "nickname": "Opal Theory",
+      "bottle_size": 15.0,
+      "website": "https://opaltheorypolish.com/",
+      "logo": "https://opaltheorypolish.com/cdn/shop/files/Opal_Theory_logo_title2.png",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 79,
+      "brand": "Pahlish",
+      "nickname": "Pahlish",
+      "bottle_size": 15.0,
+      "website": "https://www.pahlish.com/",
+      "logo": "https://www.pahlish.com/cdn/shop/files/PahlishLogoforbox_5_360x.png",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 80,
+      "brand": "Paint it Pretty Polish",
+      "nickname": "Paint it Pretty",
+      "bottle_size": 15.0,
+      "website": "https://paintitprettypolish.com",
+      "logo": "https://paintitprettypolish.com/cdn/shop/files/20210413_180616_d8585d1a-af9f-4451-8d6b-b9d1f69cfd0b.jpg",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 81,
+      "brand": "Painted Polish",
+      "nickname": "Painted",
+      "bottle_size": 13.0,
+      "website": "https://www.paintedpolish.com/",
+      "logo": "https://polishpickup.com/cdn/shop/files/painted_polish.webp",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 82,
+      "brand": "Paradox Polish",
+      "nickname": "Paradox",
+      "bottle_size": 15.0,
+      "website": "https://paradoxpolishandsoapco.com/",
+      "logo": "https://polishpickup.com/cdn/shop/files/paradox_polish.png",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 83,
+      "brand": "Penélope Luz",
+      "nickname": "PL",
+      "bottle_size": 10.0,
+      "website": "https://www.penelopeluz.com/",
+      "logo": "https://www.penelopeluz.com/cdn/shop/files/1000089450_430x_95419577-f57f-4c04-b999-8cb0e8452c85.webp",
+      "bgc": "#dcdcdc"
+    },
+    {
+      "id": 84,
+      "brand": "Pepper Polish",
+      "nickname": "Pepper",
+      "bottle_size": 10.0,
+      "website": "https://www.color4nails.com/cat/pepper-polish/",
+      "logo": null,
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 85,
+      "brand": "Phoenix Polish",
+      "nickname": "Phoenix",
+      "bottle_size": 11.0,
+      "website": "https://www.color4nails.com/cat/phoenix-indie-polish/",
+      "logo": "https://polishpickup.com/cdn/shop/files/phoenix.png",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 86,
+      "brand": "PI Colos",
+      "nickname": "PI",
+      "bottle_size": 15.0,
+      "website": "https://picolors.com/",
+      "logo": "https://picolors.com/cdn/shop/files/plain_logo_picolors.jpg",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 87,
+      "brand": "Pinnacle Polish",
+      "nickname": "Pinnacle",
+      "bottle_size": 15.0,
+      "website": "https://www.pinnaclepolish.com/",
+      "logo": "https://polishpickup.com/cdn/shop/files/pinnacle_polish.webp",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 88,
+      "brand": "Pixie Polish",
+      "nickname": "Pixie",
+      "bottle_size": 14.0,
+      "website": "https://pixiepolish.us/",
+      "logo": "https://pixiepolish.us/cdn/shop/files/IMG_8043_a2070e75-6161-45ac-988c-324a18b3889b.jpg",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 89,
+      "brand": "Polished for Days",
+      "nickname": "PfD",
+      "bottle_size": 15.0,
+      "website": "https://www.polishedfordays.com/",
+      "logo": "https://static.wixstatic.com/media/5ba0d7_d859a57221264b379a975885196ad2ce~mv2.png",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 90,
+      "brand": "Polished Praxis",
+      "nickname": "Polished Praxis",
+      "bottle_size": 15.0,
+      "website": "https://polishedpraxis.com/",
+      "logo": "https://polishedpraxis.com/cdn/shop/files/gold_outline_logo_on_white_medium_0f2a995e-7f41-45b7-be29-4185d7338676.png",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 91,
+      "brand": "Potion Polish",
+      "nickname": "Potion Polish",
+      "bottle_size": 12.0,
+      "website": "https://www.potionpolish.com/",
+      "logo": "https://assets.bigcartel.com/theme_images/122198643/potion-polish+_1_.png",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 92,
+      "brand": "Prism Parade",
+      "nickname": "Prism Parade",
+      "bottle_size": 11.0,
+      "website": "https://prismparade.com/",
+      "logo": "https://prismparade.com/cdn/shop/files/Prism-Parade-Logo-Sm-Mobile3.png",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 93,
+      "brand": "Psyche Minerals",
+      "nickname": "Psyche",
+      "bottle_size": 15.0,
+      "website": "https://www.psycheminerals.com/",
+      "logo": "https://polishpickup.com/cdn/shop/files/psyche_minerals.webp",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 94,
+      "brand": "Punkish Polish",
+      "nickname": "Punkish",
+      "bottle_size": 15.0,
+      "website": "https://www.punkishpolish.com/",
+      "logo": "https://assets.bigcartel.com/theme_images/148122048/Logo.png",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 95,
+      "brand": "Raven Lacquer",
+      "nickname": "Raven",
+      "bottle_size": 15.0,
+      "website": "https://ravenlacquer.com/",
+      "logo": "https://ravenlacquer.com/cdn/shop/files/image0_a1ee4840-1b98-4dbf-845e-60b7b60ae246.png",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 96,
+      "brand": "Red Eyed Lacquer",
+      "nickname": "Red Eyed Lacquer",
+      "bottle_size": 12.0,
+      "website": "https://redeyedlacquer.com/",
+      "logo": "https://redeyedlacquer.com/cdn/shop/files/IMG_2421_360x.JPG",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 97,
+      "brand": "Resistance Polish",
+      "nickname": "Resistance",
+      "bottle_size": 12.0,
+      "website": "https://resistancepolish.com/",
+      "logo": "https://resistancepolish.com/cdn/shop/files/Polish_11.png",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 98,
+      "brand": "Ribbits Stickits",
+      "nickname": "Ribbits",
+      "bottle_size": 15.0,
+      "website": "https://www.ribbitsstickits.com/",
+      "logo": "https://www.ribbitsstickits.com/cdn/shop/files/IMG_0621_1_540x.png",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 99,
+      "brand": "Rogue Lacquer",
+      "nickname": "Rogue",
+      "bottle_size": 13.0,
+      "website": "https://roguelacquer.com/",
+      "logo": "https://roguelacquer.com/cdn/shop/files/websitebannerlogo_540x.png",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 100,
+      "brand": "Royla Lee",
+      "nickname": "Royla Lee",
+      "bottle_size": 15.0,
+      "website": "https://roylalee.com/",
+      "logo": "https://roylalee.com/cdn/shop/files/D763921F-86BD-4371-986A-E26FA2D10773.png",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 101,
+      "brand": "Sassy Cats Lacquer",
+      "nickname": "Sassy Cats",
+      "bottle_size": 15.0,
+      "website": "https://sassycatslacquer.myshopify.com/",
+      "logo": "https://polishpickup.com/cdn/shop/files/sassy_cats.webp",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 102,
+      "brand": "Sassy Sauce Polish",
+      "nickname": "Sassy Sauce",
+      "bottle_size": 15.0,
+      "website": "https://sassysaucepolish.com/",
+      "logo": "https://sassysaucepolish.com/cdn/shop/files/IMG_4491_ac3133dc-8bd7-4d52-bf4b-25d60320171e.png",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 103,
+      "brand": "Snacker Lacquer",
+      "nickname": "Snacker Lacquer",
+      "bottle_size": 15.0,
+      "website": "https://www.shopsnackerlacquer.com/",
+      "logo": "https://www.shopsnackerlacquer.com/cdn/shop/files/2_-_no_background.png",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 104,
+      "brand": "Starrily",
+      "nickname": "Starrily",
+      "bottle_size": 15.0,
+      "website": "https://www.starrily.com/",
+      "logo": "https://www.starrily.com/cdn/shop/files/Starrily_Logo_2023.png",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 105,
+      "brand": "Stella Chroma",
+      "nickname": "Stella",
+      "bottle_size": 15.0,
+      "website": "https://www.stellachroma.com/",
+      "logo": "https://www.stellachroma.com/cdn/shop/files/STELLA_CHROMA.png",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 106,
+      "brand": "Swamp Gloss",
+      "nickname": "Swamp Gloss",
+      "bottle_size": 15.0,
+      "website": "https://swampgloss.com/",
+      "logo": "https://swampgloss.com/cdn/shop/files/IMG_7606.png",
+      "bgc": "#000000"
+    },
+    {
+      "id": 107,
+      "brand": "Sweet & Sour Lacquer",
+      "nickname": "Sweet & Sour",
+      "bottle_size": 15.0,
+      "website": "https://sweetandsourlacquer.com/",
+      "logo": "https://sweetandsourlacquer.com/cdn/shop/files/2B7AFE13-3926-4972-8645-DFFF15735B7F_360x.jpg",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 108,
+      "brand": "Sylvanclaw",
+      "nickname": "Sylvanclaw",
+      "bottle_size": 15.0,
+      "website": "https://sylvanclaw.com/",
+      "logo": "https://sylvanclaw.com/cdn/shop/files/2.1k_rectangular_logo.png",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 109,
+      "brand": "Twinkle Hex Polish",
+      "nickname": "Twinkle Hex",
+      "bottle_size": 15.0,
+      "website": "https://twinklehexpolish.com/",
+      "logo": "https://twinklehexpolish.com/cdn/shop/files/Twinkle_Hex_Logo_Large_Light_Mode.png",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 110,
+      "brand": "Tyche Lacquer",
+      "nickname": "Tyche",
+      "bottle_size": 15.0,
+      "website": "https://tychelacquer.com/",
+      "logo": "https://tychelacquer.com/cdn/shop/files/DarkBackground.png",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 111,
+      "brand": "Tyler's Trinkets",
+      "nickname": "Tyler's Trinkets",
+      "bottle_size": 11.0,
+      "website": "https://tylerstrinkets.com/",
+      "logo": "https://tylerstrinkets.com/cdn/shop/files/TT-Logo-Stacked-Bold-White_0085f02b-4163-4944-9557-ba8b4f59f600.png",
+      "bgc": "#000000"
+    },
+    {
+      "id": 112,
+      "brand": "Uno Mas Colors",
+      "nickname": "Uno Mas",
+      "bottle_size": 15.0,
+      "website": "https://unomascolors.com/",
+      "logo": "https://unomascolors.com/cdn/shop/files/UMC_HeaderLogo_DiaMuerto1.png",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 113,
+      "brand": "Vibrant Scents",
+      "nickname": "Vibrant Scents",
+      "bottle_size": 15.0,
+      "website": "https://www.vibrantscents.com/",
+      "logo": "https://94a2b49f7f2a1be1f697.cdn6.editmysite.com/uploads/b/94a2b49f7f2a1be1f697c49d13180302292877bc6565174df242c434d47f90bd/logo-text-only_1711734911.png",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 114,
+      "brand": "Waabooz Cosmetics",
+      "nickname": "Waabooz",
+      "bottle_size": 15.0,
+      "website": "https://waaboozcosmetics.com/",
+      "logo": "https://waaboozcosmetics.com/cdn/shop/files/1000017226.jpg",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 115,
+      "brand": "What's Up Nails",
+      "nickname": "What's Up",
+      "bottle_size": 11.0,
+      "website": "https://whatsupbeauty.com/collections/nail-polishes-whats-up-nails",
+      "logo": null,
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 116,
+      "brand": "Whatcha",
+      "nickname": "Whatcha",
+      "bottle_size": 10.0,
+      "website": "https://www.color4nails.com/cat/whatcha/",
+      "logo": "https://polishpickup.com/cdn/shop/files/whatcha.png",
+      "bgc": "#ffffff"
+    },
+    {
+      "id": 117,
+      "brand": "Zombie Claw Polish",
+      "nickname": "Zombie Claw",
+      "bottle_size": 14.0,
+      "website": "https://zombieclawpolish.com/",
+      "logo": "https://zombieclawpolish.com/cdn/shop/files/8003C26E-8142-48DA-83D7-18A4D45F7CB1_360x.png",
+      "bgc": "#ffffff"
+    }
+  ]
+}
