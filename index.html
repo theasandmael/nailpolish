@@ -1,4 +1,5 @@
 <title>Polish Collection</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="shortcut icon" type="image/x-icon" href="resources/favicon.ico">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Figtree:wght@400;500;600&display=swap">
@@ -254,6 +255,40 @@ body.selecting .app { padding-bottom: 90px; }
 .note b { color: var(--ink); }
 .loading { padding: 60px 0; text-align: center; color: var(--muted); }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important; } }
+/* keep content clear of the notch / status bar */
+body { padding-top: env(safe-area-inset-top, 0px); }
+.tabs { top: env(safe-area-inset-top, 0px); }
+
+/* stop iOS Safari from zooming in when a field is focused */
+input, select, textarea { font-size: 16px; }
+
+/* comfortable touch targets (44px is the usual minimum) */
+.icon-btn { width: 44px; height: 44px; }
+.more { width: 44px; height: 44px; }
+.btn { min-height: 44px; }
+.seg button { min-height: 36px; padding: 6px 14px; }
+.opt, .pop button { min-height: 44px; }
+
+/* no sticky hover states or double-tap-zoom delay on touch */
+button, .tab, .row, .opt { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+
+@media (hover: none) {
+  .pop button:hover, .more:hover { background: transparent; }
+  .arrow { display: none; }            /* swipe the gallery instead */
+}
+
+@media (max-width: 480px) {
+  .top { flex-wrap: wrap; }
+  .brandmark { font-size: 21px; flex-basis: 100%; }
+  .tools { margin-left: auto; }
+  .slide { height: 240px; }
+  .detail h2, .bhead h2 { font-size: 22px; }
+  .status-pick { gap: 4px; }
+  .row { gap: 10px; padding: 10px 12px; }
+  .thumb { max-width: 48px; max-height: 48px; }
+  .sheet { max-height: 92vh; }
+  .pop { max-width: calc(100vw - 24px); }
+}
 </style>
 
 <div class="app" id="app">
