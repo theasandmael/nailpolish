@@ -5,6 +5,22 @@ import { buildCatalog } from './buildCatalog.js';
 import { countryText } from './countryText.js';
 import { docToLists } from './docToLists.js';
 import { exportPolishDataAsZip } from './exportPolishDataAsZip.js';
+import { fbUrl } from './fbUrl.js';
+import { flush } from './flush.js';
+import { foldKey } from './foldKey.js';
+import { h } from './h.js';
+import { hashtag } from './hashtag.js';
+import { igUrl } from './igUrl.js';
+import { initAccount } from './initAccount.js';
+import { listsToDoc } from './listsToDoc.js';
+import { loadLocal } from './loadLocal.js';
+import { matchesSearch } from './matchesSearch.js';
+import { persist } from './persist.js';
+import { releaseText } from './releaseText.js';
+import { saveLocal } from './saveLocal.js';
+import { setStatus } from './setStatus.js';
+import { svg } from './svg.js';
+
 
 // Expose functions globally if required by inline HTML (like onclick attributes)
 window.applyTheme = applyTheme;
