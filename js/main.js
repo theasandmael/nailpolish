@@ -291,7 +291,9 @@ function renderBulk() {
   bar.replaceChildren(add, h("span", { class: "count" }, n ? `${n} selected` : "Select polishes"), selAll,
     ...(inStatusTab ? [h("button", { class: "btn danger", disabled: n ? null : true, onclick: () => applyBulk(null) }, ic("trash"), "Remove")] : []));
 }
-
+$("#backBtn").replaceChildren(ic("back"));
+$("#backBtn").addEventListener("click", back);
+function renderBack() { $("#backBtn").hidden = state.nav.length === 0; }
 /* ---------- popup menus ---------- */
 let openPop = null;
 function closePop() { if (openPop) { openPop.remove(); openPop = null; } }
@@ -366,10 +368,9 @@ function groupsFor(items) {
   else out.sort((a, b) => cmp(a.title, b.title));
   return out;
 }
-function splitCollections(items, collapseSingles) {
+function splitCollections(items) {
   const map = new Map(), loose = [];
   for (const p of items) { if (p.collection) { if (!map.has(p.collection)) map.set(p.collection, []); map.get(p.collection).push(p); } else loose.push(p); }
-  if (collapseSingles) for (const [k, v] of [...map]) if (v.length === 1) { loose.push(v[0]); map.delete(k); }
   loose.sort(collThenName);
   return { groups: [...map].sort((a, b) => cmp(a[0], b[0])), loose };
 }
@@ -441,13 +442,12 @@ function toggleGroup(key, defaultOpen) { state.open[key] = !groupOpen(key, defau
 function renderList(items) {
   const frag = document.createDocumentFragment();
   const inBrand = listScope() === "brand";
-  const statusList = state.tab !== "database" && !inBrand;
   const bigDefaultCollapsed = items.length > 250;
   const showBrand = !inBrand && state.sort !== "brand";
 
   const collectionBlocks = (ps, scope) => {
     const box = document.createDocumentFragment();
-    const { groups, loose } = splitCollections(ps, statusList);
+    const { groups, loose } = splitCollections(ps);
     for (const [name, list] of groups) {
       const k = `c|${scope}|${name}`, open = groupOpen(k, true);
       box.append(h("div", { class: "sub" },
@@ -566,7 +566,7 @@ function renderBrandList(box) {
 function renderAll() {
   const nav = state.nav[state.nav.length - 1];
   if (state.sel && ((nav && nav.type === "polish") || (state.tab === "database" && state.dbMode === "brands" && !nav))) exitSelect();
-  renderTabs(); renderBar(); renderContent(); renderBulk();
+  renderTabs(); renderBar(); renderContent(); renderBulk(); renderBack();
 }
 
 /* ---------- navigation ---------- */
@@ -581,7 +581,6 @@ function back() { state.nav.pop(); renderAll(); }
 /* ---------- brand header ---------- */
 function brandHeader(b) {
   const frag = document.createDocumentFragment();
-  frag.append(h("div", { class: "backbar" }, h("button", { class: "btn", onclick: back }, ic("back"), "Back")));
   const country = countryText(b.country);
   frag.append(h("div", { class: "bhead" }, brandThumb(b, 64), h("div", null, h("h2", null, b.name),
     h("div", { class: "meta" }, [`${b.count} polish${b.count === 1 ? "" : "es"}`, country].filter(Boolean).join(" · ")))));
@@ -647,7 +646,6 @@ function kv(k, v) { return h("div", { class: "kv" }, h("span", null, k), h("span
 function polishDetail(p) {
   const el = h("div", { class: "detail" });
   if (!p) return el;
-  el.append(h("div", { class: "backbar" }, h("button", { class: "btn", onclick: back }, ic("back"), "Back")));
   el.append(h("h2", null, p.name));
   el.append(h("p", { class: "by" }, "by ", h("button", { onclick: () => { state.nav = state.nav.filter(n => n.type !== "polish"); const t = state.nav[state.nav.length - 1]; if (t && t.type === "brand" && t.name === p.brand.name) { renderAll(); window.scrollTo({ top: 0 }); } else openBrand(p.brand.name); } }, p.brand.name)));
 
