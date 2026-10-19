@@ -289,6 +289,16 @@ button, .tab, .row, .opt { touch-action: manipulation; -webkit-tap-highlight-col
   .sheet { max-height: 92vh; }
   .pop { max-width: calc(100vw - 24px); }
 }
+@media (max-width: 600px) {
+  .bar { gap: 6px; }
+  .bar .search { flex: 1 1 0; min-width: 0; }          /* search takes whatever space is left */
+  .bar .btn { flex: none; width: 44px; padding: 0; justify-content: center; }
+  .bar .btn .lbl { display: none; }                    /* icon-only */
+  .bar .btn svg { width: 20px; height: 20px; }
+  .bar .anchor { flex: none; }
+  .bar .seg { flex: 1 0 100%; order: -1; }             /* Brands/Polishes toggle gets its own row above */
+  .bar .seg button { flex: 1; }
+}
 </style>
 
 <div class="app" id="app">
