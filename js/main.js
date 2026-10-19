@@ -496,8 +496,7 @@ function renderBar() {
   const inBrand = listScope() === "brand";
   const showBrandsGrid = state.tab === "database" && state.dbMode === "brands" && !inBrand;
 
-  const input = h("input", { id: "q", type: "search", placeholder: "Search brand, shade or collection", value: state.search, "aria-label": "Search" });
-  let t; input.addEventListener("input", () => { clearTimeout(t); t = setTimeout(() => { state.search = input.value; renderContent(); renderBulk(); }, 140); });
+  const input = h("input", { id: "q", type: "search", placeholder: window.matchMedia("(max-width: 600px)").matches ? "Search" : "Search brand, shade or collection", value: state.search, "aria-label": "Search" });  let t; input.addEventListener("input", () => { clearTimeout(t); t = setTimeout(() => { state.search = input.value; renderContent(); renderBulk(); }, 140); });
   const bar = h("div", { class: "bar" }, h("label", { class: "search" }, ic("search"), input));
 
   if (state.tab === "database" && !inBrand) {
@@ -508,14 +507,16 @@ function renderBar() {
   if (!showBrandsGrid) {
     if (!inBrand) {
       const SORTS = [["brand", "Brand", "tag"], ["color", "Color", "database"], ["finish", "Finish", "sort"], ["collection", "Collection", "stash"], ["collectionType", "Collection Type", "archive"]];
-      const sb = h("button", { class: "btn", "data-pop": "1" }, ic("sort"), "Sort: " + SORTS.find(s => s[0] === state.sort)[1]);
+      const sortLabel = "Sort: " + SORTS.find(s => s[0] === state.sort)[1];
+      const sb = h("button", { class: "btn", "data-pop": "1", "aria-label": sortLabel, title: sortLabel }, ic("sort"), h("span", { class: "lbl" }, sortLabel));
       sb.addEventListener("click", () => popMenu(sb, SORTS.map(s => ({ label: s[1], checked: state.sort === s[0], run: () => { state.sort = s[0]; renderAll(); } }))));
       bar.append(h("span", { class: "anchor" }, sb));
     }
-    bar.append(h("button", { class: "btn" + (filtersActive() ? " on" : ""), onclick: openFilters }, ic("filter"), "Filter"));
-    bar.append(h("button", { class: "btn" + (state.sel ? " on" : ""), onclick: () => { if (state.sel) { exitSelect(); renderAll(); } else startSelect(); } }, ic("check"), state.sel ? "Done" : "Select"));
+    bar.append(h("button", { class: "btn" + (filtersActive() ? " on" : ""), "aria-label": "Filter", title: "Filter", onclick: openFilters }, ic("filter"), h("span", { class: "lbl" }, "Filter")));
+    const selLabel = state.sel ? "Done" : "Select";
+    bar.append(h("button", { class: "btn" + (state.sel ? " on" : ""), "aria-label": selLabel + " (bulk edit)", title: selLabel, onclick: () => { if (state.sel) { exitSelect(); renderAll(); } else startSelect(); } }, ic("check"), h("span", { class: "lbl" }, selLabel)));
     if (["stash", "wishlist", "destash"].includes(state.tab) && !inBrand)
-      bar.append(h("button", { class: "btn", onclick: exportCsv, title: "Download this list as CSV" }, ic("export"), "CSV"));
+      bar.append(h("button", { class: "btn", "aria-label": "Download this list as CSV", title: "Download this list as CSV", onclick: exportCsv }, ic("export"), h("span", { class: "lbl" }, "CSV")));
   }
   box.append(bar);
 }
