@@ -299,6 +299,9 @@ button, .tab, .row, .opt { touch-action: manipulation; -webkit-tap-highlight-col
   .bar .seg { flex: 1 0 100%; order: -1; }             /* Brands/Polishes toggle gets its own row above */
   .bar .seg button { flex: 1; }
 }
+.icon-btn[hidden] { display: none; }
+.detail h2 { margin-top: 14px; }
+.bhead { padding-top: 14px; }
 </style>
 
 <div class="app" id="app">
@@ -306,6 +309,7 @@ button, .tab, .row, .opt { touch-action: manipulation; -webkit-tap-highlight-col
     <h1 class="brandmark">Polish Collection<small id="tagline">Stash, wishlist and a database of indie polish</small></h1>
     <div class="tools">
     <span id="who"></span>
+    <button class="icon-btn" id="backBtn" aria-label="Back" title="Back" hidden></button>
     <button class="icon-btn" id="importBtn" aria-label="Import lists from a file" title="Import from a backup ZIP or CSV"></button>
     <input type="file" id="importFile" accept=".zip,.csv,text/csv,application/zip" multiple hidden>
     <button class="icon-btn" id="backupBtn" aria-label="Download a backup of all lists" title="Download backup (ZIP)"></button>
