@@ -43,6 +43,7 @@ const ICON = {
   moon: '<path d="M20 14.500A8 8 0 0 1 9.500 4 8 8 0 1 0 20 14.500Z"/>',
   auto: '<circle cx="12" cy="12" r="9"/><path d="M12 3v18" /><path d="M12 3a9 9 0 0 1 0 18Z" fill="currentColor"/>',
   trash: '<path d="M4 7h16M10 11v6m4-6v6M6 7l1 12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1l1-12M9 7V4h6v3"/>',
+  import: '<path d="M12 3v12m0 0-4-4m4 4 4-4"/><path d="M5 12v7a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-7"/>',
   hash: '<path d="M5 9h14M5 15h14M10 4 8 20m8-16-2 16"/>',
   tag: '<path d="M3 12V4h8l10 10-8 8L3 12Z"/><circle cx="7.500" cy="8.500" r="1.200"/>',
 };
@@ -105,7 +106,7 @@ const state = {
   nav: [],                    // detail stack: {type:"polish",id} | {type:"brand",name}
   open: {},                   // expanded groups: key -> bool
   lists: new Map(),           // polish key -> status
-  catalog: null, extra: {}, shards: {},
+  catalog: null, extra: {}, shards: {}, sel: null,   // sel: Set of polish keys while bulk-editing
 };
 const store = {
   get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
@@ -224,6 +225,9 @@ let themeMode = store.get("theme") || "system";
 applyTheme(themeMode);
 $("#backupBtn").replaceChildren(ic("export"));
 $("#backupBtn").addEventListener("click", exportBackup);
+$("#importBtn").replaceChildren(ic("import"));
+$("#importBtn").addEventListener("click", () => $("#importFile").click());
+$("#importFile").addEventListener("change", e => { const fs = [...e.target.files]; e.target.value = ""; if (fs.length) importFiles(fs); });
 $("#themeBtn").addEventListener("click", () => {
   themeMode = themeMode === "system" ? "light" : themeMode === "light" ? "dark" : "system";
   store.set("theme", themeMode); applyTheme(themeMode);
@@ -260,9 +264,32 @@ function renderTabs() {
   }
 }
 function switchTab(id) {
-  state.tab = id; state.nav = []; state.search = ""; state.sort = "brand";
+  exitSelect(); state.tab = id; state.nav = []; state.search = ""; state.sort = "brand";
   state.filters = { finishes: new Set(), colors: new Set(), inStock: false, min: "", max: "" };
   renderAll(); window.scrollTo({ top: 0 });
+}
+
+/* ---------- bulk edit ---------- */
+function exitSelect() { state.sel = null; }
+function startSelect() { state.sel = new Set(); renderAll(); }
+function applyBulk(status) {
+  const keys = [...state.sel];
+  for (const k of keys) { if (status) state.lists.set(k, status); else state.lists.delete(k); }
+  persist(); exitSelect(); renderAll();
+  toast(status ? `${keys.length} moved to ${STATUS[status].label}` : `${keys.length} removed from this list`);
+}
+function renderBulk() {
+  let bar = $("#bulk");
+  if (!state.sel) { if (bar) bar.remove(); document.body.classList.remove("selecting"); return; }
+  if (!bar) { bar = h("div", { id: "bulk", role: "toolbar", "aria-label": "Bulk edit" }); document.body.append(bar); }
+  document.body.classList.add("selecting");
+  const n = state.sel.size, inStatusTab = state.tab !== "database";
+  const add = h("button", { class: "btn primary", "data-pop": "1", disabled: n ? null : true }, ic("stash"), inStatusTab ? "Move to…" : "Add to…");
+  add.addEventListener("click", () => popMenu(add, STATUS_ORDER.map(s => ({ label: STATUS[s].label, icon: STATUS[s].icon, run: () => applyBulk(s) }))));
+  const all = filtered(), allOn = all.length > 0 && all.every(p => state.sel.has(p.key));
+  const selAll = h("button", { class: "btn", onclick: () => { allOn ? state.sel.clear() : all.forEach(p => state.sel.add(p.key)); renderContent(); renderBulk(); } }, allOn ? "Deselect all" : "Select all");
+  bar.replaceChildren(add, h("span", { class: "count" }, n ? `${n} selected` : "Select polishes"), selAll,
+    ...(inStatusTab ? [h("button", { class: "btn danger", disabled: n ? null : true, onclick: () => applyBulk(null) }, ic("trash"), "Remove")] : []));
 }
 
 /* ---------- popup menus ---------- */
@@ -374,10 +401,11 @@ function polishRow(p, opts) {
   const side = h("div", { class: "side" + (strong ? " strong" : "") },
     p.price != null ? h("span", { class: "price" }, MONEY.format(p.price)) : null,
     p.ppm != null ? h("span", { class: "perml" }, MONEY.format(p.ppm) + "/mL") : null,
-    p.stock === 1 ? h("span", { class: "in" }, "In stock") : p.stock === 0 ? h("span", { class: "out" }, "Out of stock") : null,
     statusOf(p) ? h("span", { class: "tag" }, ic(STATUS[statusOf(p)].icon), STATUS[statusOf(p)].label) : null,
     p.pstatus === "disc" ? h("span", { class: "tag" }, "Discontinued") : null);
-  const main = h("button", { class: "main", onclick: () => openPolish(p) },
+  const picking = !!state.sel;
+  const main = h("button", { class: "main", onclick: picking ? () => togglePick(p, wrap) : () => openPolish(p) },
+    picking ? h("span", { class: "chk", "aria-hidden": "true" }, ic("check")) : null,
     thumb(p),
     h("div", { class: "txt" },
       opts.showBrand ? h("div", { class: "br" }, p.brand.name) : null,
@@ -385,10 +413,17 @@ function polishRow(p, opts) {
       p.collection ? h("div", { class: "co" }, p.collection) : null,
       p.finishes.length ? h("div", { class: "fi" }, p.finishes.join(" · ")) : null),
     side);
-  const wrap = h("div", { class: "row" }, main);
+  const wrap = h("div", { class: "row" + (picking && state.sel.has(p.key) ? " picked" : "") }, main);
+  if (picking) { main.setAttribute("aria-pressed", String(state.sel.has(p.key))); return wrap; }
   const more = h("button", { class: "more", "data-pop": "1", "aria-label": "Move " + p.name, onclick: e => { e.stopPropagation(); rowMenu(more, p); } }, ic("more"));
   wrap.append(h("span", { class: "anchor" }, more));
   return wrap;
+}
+function togglePick(p, row) {
+  const on = !state.sel.has(p.key);
+  on ? state.sel.add(p.key) : state.sel.delete(p.key);
+  row.classList.toggle("picked", on); row.querySelector(".main").setAttribute("aria-pressed", String(on));
+  renderBulk();
 }
 function rowMenu(btn, p) {
   const cur = statusOf(p), items = [];
@@ -462,7 +497,7 @@ function renderBar() {
   const showBrandsGrid = state.tab === "database" && state.dbMode === "brands" && !inBrand;
 
   const input = h("input", { id: "q", type: "search", placeholder: "Search brand, shade or collection", value: state.search, "aria-label": "Search" });
-  let t; input.addEventListener("input", () => { clearTimeout(t); t = setTimeout(() => { state.search = input.value; renderContent(); }, 140); });
+  let t; input.addEventListener("input", () => { clearTimeout(t); t = setTimeout(() => { state.search = input.value; renderContent(); renderBulk(); }, 140); });
   const bar = h("div", { class: "bar" }, h("label", { class: "search" }, ic("search"), input));
 
   if (state.tab === "database" && !inBrand) {
@@ -478,6 +513,7 @@ function renderBar() {
       bar.append(h("span", { class: "anchor" }, sb));
     }
     bar.append(h("button", { class: "btn" + (filtersActive() ? " on" : ""), onclick: openFilters }, ic("filter"), "Filter"));
+    bar.append(h("button", { class: "btn" + (state.sel ? " on" : ""), onclick: () => { if (state.sel) { exitSelect(); renderAll(); } else startSelect(); } }, ic("check"), state.sel ? "Done" : "Select"));
     if (["stash", "wishlist", "destash"].includes(state.tab) && !inBrand)
       bar.append(h("button", { class: "btn", onclick: exportCsv, title: "Download this list as CSV" }, ic("export"), "CSV"));
   }
@@ -526,7 +562,11 @@ function renderBrandList(box) {
   box.append(card);
 }
 
-function renderAll() { renderTabs(); renderBar(); renderContent(); }
+function renderAll() {
+  const nav = state.nav[state.nav.length - 1];
+  if (state.sel && ((nav && nav.type === "polish") || (state.tab === "database" && state.dbMode === "brands" && !nav))) exitSelect();
+  renderTabs(); renderBar(); renderContent(); renderBulk();
+}
 
 /* ---------- navigation ---------- */
 function openPolish(p) { state.nav.push({ type: "polish", id: p.id }); renderAll(); window.scrollTo({ top: 0 }); loadExtra(p); }
@@ -725,6 +765,58 @@ async function exportCsv() {
   const list = listOf(state.tab);
   if (!list.length) { toast("This list is empty."); return; }
   await saveFile(`${STATUS[state.tab].label}-${today()}.csv`, csvText(list));
+}
+/* ---------- import (local file) ---------- */
+function parseCsv(text) {
+  const rows = []; let row = [], f = "", q = false;
+  text = text.replace(/^\uFEFF/, "");
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if (q) { if (c === '"') { if (text[i + 1] === '"') { f += '"'; i++; } else q = false; } else f += c; }
+    else if (c === '"') q = true;
+    else if (c === ",") { row.push(f); f = ""; }
+    else if (c === "\n" || c === "\r") { if (c === "\r" && text[i + 1] === "\n") i++; row.push(f); f = ""; rows.push(row); row = []; }
+    else f += c;
+  }
+  if (f || row.length) { row.push(f); rows.push(row); }
+  return rows.filter(r => r.some(x => x.trim()));
+}
+function statusFromName(name) {
+  const n = name.toLowerCase();
+  return ["destash", "wishlist", "archive", "stash"].find(s => n.includes(s)) || null;   // "destash" before "stash"
+}
+// Reads one CSV exported by this page (ID, Brand, Name, ...) and puts each polish it can find on that list.
+function importCsv(text, status, tally) {
+  const rows = parseCsv(text); if (rows.length < 2) return;
+  const head = rows[0].map(x => x.trim().toLowerCase());
+  const iId = head.indexOf("id"), iBrand = head.indexOf("brand"), iName = head.indexOf("name");
+  if (iBrand < 0 || iName < 0) { tally.bad++; return; }
+  for (const r of rows.slice(1)) {
+    const p = BY_KEY.get(foldKey((r[iBrand] || "").trim() + "|" + (r[iName] || "").trim()))
+      || (iId >= 0 && BY_ID.get(Number(r[iId])) && foldKey(BY_ID.get(Number(r[iId])).name) === foldKey((r[iName] || "").trim()) ? BY_ID.get(Number(r[iId])) : null);
+    if (p) { state.lists.set(p.key, status); tally.ok++; } else tally.miss++;
+  }
+}
+async function importFiles(files) {
+  const tally = { ok: 0, miss: 0, bad: 0 };
+  const fallback = ["stash", "wishlist", "destash", "archive"].includes(state.tab) ? state.tab : "stash";
+  try {
+    for (const file of files) {
+      if (/\.zip$/i.test(file.name)) {
+        if (typeof JSZip === "undefined") { toast("The import tool didn't load. Check your connection and reload."); return; }
+        const zip = await JSZip.loadAsync(file);
+        for (const entry of Object.values(zip.files)) {
+          if (entry.dir || !/\.csv$/i.test(entry.name) || /__MACOSX/.test(entry.name)) continue;
+          importCsv(await entry.async("string"), statusFromName(entry.name) || fallback, tally);
+        }
+      } else importCsv(await file.text(), statusFromName(file.name) || fallback, tally);
+    }
+  } catch (e) { toast("Couldn't read that file."); return; }
+  if (tally.ok) { persist(); renderAll(); }
+  const parts = [tally.ok ? `Imported ${tally.ok} polish${tally.ok === 1 ? "" : "es"}` : "Nothing imported"];
+  if (tally.miss) parts.push(`${tally.miss} not found in the catalog`);
+  if (tally.bad) parts.push(`${tally.bad} file${tally.bad === 1 ? "" : "s"} weren't in the expected format`);
+  toast(parts.join(" · "));
 }
 async function exportBackup() {
   if (typeof JSZip === "undefined") { toast("The backup tool didn't load. Check your connection and reload."); return; }
