@@ -1,0 +1,1012 @@
+<html><head><title>Polish Collection</title>
+<meta content="width=device-width, initial-scale=1, viewport-fit=cover" name="viewport"/>
+<meta content="cover" name="claude:viewport-fit-sides"/>
+<link href="resources/favicon.ico" rel="shortcut icon" type="image/x-icon"/>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&amp;family=Figtree:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<style>
+/* Layout: sticky header + tab bar over one scrolling column; lists in cards on a soft lavender wash. */
+:root {
+  --bg: #f6f2fa;
+  --wash: linear-gradient(135deg, #f8dcea 0%, #e6dcf6 48%, #d4e7f6 100%);
+  --surface: #ffffff;
+  --surface-2: #f1ebf8;
+  --ink: #2a2433;
+  --muted: #6c6479;
+  --line: #e2d9ee;
+  --accent: #7a5cb3;
+  --accent-ink: #ffffff;
+  --accent-soft: #e9e0f7;
+  --pink: #d9689c;
+  --good: #2b8a54;
+  --bad: #bf4038;
+  --shadow: 0 1px 2px rgba(60, 40, 90, .08), 0 6px 20px rgba(60, 40, 90, .06);
+  --font-display: "Bricolage Grotesque", "Avenir Next", "Segoe UI", sans-serif;
+  --font-body: "Figtree", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #16121d;
+    --wash: linear-gradient(135deg, #2c1a2a 0%, #241d38 48%, #172337 100%);
+    --surface: #211b2c;
+    --surface-2: #2b2339;
+    --ink: #efe9f7;
+    --muted: #a99fba;
+    --line: #382e4a;
+    --accent: #b99cf2;
+    --accent-ink: #1b1428;
+    --accent-soft: #35294d;
+    --pink: #ee86b4;
+    --good: #6cc791;
+    --bad: #f28c84;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 6px 20px rgba(0, 0, 0, .25);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #16121d;
+  --wash: linear-gradient(135deg, #2c1a2a 0%, #241d38 48%, #172337 100%);
+  --surface: #211b2c;
+  --surface-2: #2b2339;
+  --ink: #efe9f7;
+  --muted: #a99fba;
+  --line: #382e4a;
+  --accent: #b99cf2;
+  --accent-ink: #1b1428;
+  --accent-soft: #35294d;
+  --pink: #ee86b4;
+  --good: #6cc791;
+  --bad: #f28c84;
+  --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 6px 20px rgba(0, 0, 0, .25);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html, body { min-height: 100%; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font: 15px/1.45 var(--font-body);
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 0;
+}
+body::before { content: ""; position: fixed; inset: 0; background: var(--wash); opacity: .55; z-index: -1; pointer-events: none; }
+button, input, select { font: inherit; color: inherit; }
+button { cursor: pointer; }
+a { color: var(--accent); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+
+.app { max-width: 960px; margin: 0 auto; padding-bottom: 40px; }
+
+/* header */
+.top { display: flex; align-items: center; gap: 12px; padding: 14px 0 8px; }
+.tools { display: flex; align-items: center; gap: 6px; flex: none; }
+.brandmark { font: 700 24px/1 var(--font-display); letter-spacing: -.01em; margin: 0; flex: 1 1 auto; min-width: 0; }
+.brandmark small { display: block; font: 500 12px/1.3 var(--font-body); letter-spacing: 0; color: var(--muted); margin-top: 4px; }
+.chip { display: inline-flex; align-items: center; gap: 8px; background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 5px 12px 5px 6px; font-size: 13px; max-width: 100%; }
+.chip.plain { padding: 5px 12px; }
+.chip img { width: 22px; height: 22px; border-radius: 50%; }
+.chip span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.icon-btn { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; width: 38px; height: 38px; display: inline-grid; place-items: center; }
+.icon-btn svg { width: 18px; height: 18px; }
+
+/* tabs */
+.tabs { display: flex; gap: 4px; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 4px; position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; box-shadow: var(--shadow); overflow-x: auto; scrollbar-width: none; }
+.tabs::-webkit-scrollbar { display: none; }
+.tab { flex: 1 0 auto; border: 0; background: transparent; border-radius: 10px; padding: 9px 12px; display: flex; align-items: center; justify-content: center; gap: 7px; font-weight: 600; font-size: 14px; color: var(--muted); white-space: nowrap; }
+.tab svg { width: 17px; height: 17px; }
+.tab[aria-selected="true"] { background: var(--accent); color: var(--accent-ink); }
+.tab .count { font-size: 11px; font-weight: 600; background: var(--accent-soft); color: var(--accent); border-radius: 999px; padding: 1px 7px; min-width: 20px; text-align: center; }
+.tab[aria-selected="true"] .count { background: rgba(255, 255, 255, .25); color: inherit; }
+@media (max-width: 520px) { .tab { padding: 9px 10px; } .tab .label { display: none; } .tab[aria-selected="true"] .label { display: inline; } }
+
+/* toolbar */
+.bar { display: flex; flex-wrap: wrap; gap: 8px; padding: 14px 0 10px; align-items: center; }
+.search { flex: 1 1 220px; min-width: 0; position: relative; }
+.search input { width: 100%; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px 10px 38px; }
+.search svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: var(--muted); }
+.btn { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 9px 13px; display: inline-flex; align-items: center; gap: 7px; font-weight: 500; font-size: 14px; }
+.btn svg { width: 16px; height: 16px; }
+.btn.primary { background: var(--accent); color: var(--accent-ink); border-color: transparent; }
+.btn.on { border-color: var(--accent); color: var(--accent); }
+.btn[disabled] { opacity: .45; cursor: default; }
+.seg { display: inline-flex; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 3px; }
+.seg button { border: 0; background: transparent; border-radius: 9px; padding: 6px 12px; font-size: 14px; color: var(--muted); font-weight: 500; }
+.seg button[aria-pressed="true"] { background: var(--accent-soft); color: var(--accent); }
+
+.summary { display: flex; flex-wrap: wrap; gap: 6px 16px; color: var(--muted); font-size: 13px; padding: 0 2px 8px; }
+.summary b { color: var(--ink); font-weight: 600; }
+
+/* menus */
+.pop { position: fixed; z-index: 30; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; box-shadow: var(--shadow); padding: 6px; min-width: 190px; }
+.pop button { display: flex; align-items: center; gap: 9px; width: 100%; text-align: left; border: 0; background: transparent; padding: 8px 10px; border-radius: 8px; font-size: 14px; }
+.pop button:hover { background: var(--surface-2); }
+.pop button[aria-checked="true"] { color: var(--accent); font-weight: 600; }
+.pop svg { width: 16px; height: 16px; flex: none; }
+.anchor { position: relative; display: inline-block; }
+
+/* groups & rows */
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; box-shadow: var(--shadow); overflow: hidden; margin-bottom: 12px; }
+.ghead { width: 100%; display: flex; align-items: center; gap: 10px; border: 0; background: transparent; padding: 12px 14px; text-align: left; font: 600 16px/1.2 var(--font-display); }
+.ghead .chev { width: 16px; height: 16px; flex: none; transition: transform .15s; color: var(--muted); }
+.ghead[aria-expanded="true"] .chev { transform: rotate(90deg); }
+.ghead .n { margin-left: auto; font: 500 12px var(--font-body); color: var(--muted); }
+.ghead .gt { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.sub { border-top: 1px solid var(--line); }
+.subhead { width: 100%; display: flex; align-items: center; gap: 8px; border: 0; background: var(--surface-2); padding: 8px 14px 8px 18px; text-align: left; font-weight: 600; font-size: 14px; color: var(--accent); }
+.subhead .chev { width: 14px; height: 14px; transition: transform .15s; flex: none; }
+.subhead[aria-expanded="true"] .chev { transform: rotate(90deg); }
+.subhead .n { margin-left: auto; font-size: 12px; color: var(--muted); font-weight: 500; }
+
+.row { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-top: 1px solid var(--line); }
+.ghead + .row, .subhead + .row { border-top: 1px solid var(--line); }
+.row .main { flex: 1 1 auto; min-width: 0; background: transparent; border: 0; padding: 0; text-align: left; display: flex; align-items: center; gap: 12px; }
+.row .txt { min-width: 0; flex: 1 1 auto; }
+.row .nm { font-weight: 600; font-size: 15px; overflow-wrap: anywhere; }
+.row .br { font-size: 12px; color: var(--muted); }
+.row .co { font-size: 13px; color: var(--accent); }
+.row .fi { font-size: 12px; color: var(--muted); }
+.row .side { text-align: right; flex: none; display: flex; flex-direction: column; align-items: flex-end; gap: 2px; font-size: 12px; color: var(--muted); }
+.row .chk { flex: none; width: 24px; height: 24px; border-radius: 50%; border: 2px solid var(--line); display: grid; place-items: center; color: transparent; }
+.row .chk svg { width: 14px; height: 14px; stroke-width: 3; }
+.row.picked { background: var(--accent-soft); }
+.row.picked .chk { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+#bulk { position: fixed; left: 0; right: 0; bottom: 0; z-index: 30; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: space-between;
+  padding: 10px max(16px, env(safe-area-inset-left, 0px)) calc(10px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-right, 0px));
+  background: var(--surface); border-top: 1px solid var(--line); box-shadow: 0 -6px 20px rgba(60, 40, 90, .12); }
+#bulk .count { color: var(--muted); font-size: 13px; flex: 1 1 auto; text-align: center; }
+.btn.danger { color: var(--bad); }
+body.selecting .app { padding-bottom: 90px; }
+.row .side .price { font-size: 12px; }
+.row .side.strong .price { font-size: 14px; font-weight: 600; color: var(--ink); }
+.row .side .in { color: var(--good); } .row .side .out { color: var(--bad); }
+.row .side:not(.strong) .in, .row .side:not(.strong) .out { color: var(--muted); font-size: 11px; }
+.tag { font-size: 11px; display: inline-flex; align-items: center; gap: 4px; }
+.tag svg { width: 11px; height: 11px; }
+.more { flex: none; width: 34px; height: 34px; border-radius: 10px; border: 1px solid transparent; background: transparent; display: grid; place-items: center; color: var(--muted); }
+.more:hover { background: var(--surface-2); }
+.more svg { width: 18px; height: 18px; }
+@media (max-width: 480px) { .row .side .perml { display: none; } }
+
+.thumb { position: relative; flex: none; border-radius: 22%; overflow: hidden; border: 2.5px solid var(--line); background: var(--surface-2); display: grid; place-items: center; }
+.thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.thumb.logo img { object-fit: contain; padding: 12%; }
+.thumb .q { font-size: 12px; color: var(--muted); }
+
+.empty { text-align: center; color: var(--muted); padding: 48px 16px; }
+.empty b { display: block; font: 600 17px var(--font-display); color: var(--ink); margin-bottom: 4px; }
+
+/* brand tiles (database > brands) */
+.brandrow { display: flex; align-items: center; gap: 12px; width: 100%; background: transparent; border: 0; border-top: 1px solid var(--line); padding: 10px 14px; text-align: left; }
+.brandrow:first-child { border-top: 0; }
+.brandrow .nm { font: 600 16px var(--font-display); }
+.brandrow .sub2 { font-size: 12px; color: var(--muted); }
+.brandrow .chev { margin-left: auto; width: 16px; height: 16px; color: var(--muted); }
+
+/* detail */
+.backbar { display: flex; align-items: center; gap: 10px; padding: 14px 0 10px; }
+.detail h2 { font: 700 26px/1.15 var(--font-display); margin: 6px 0 2px; overflow-wrap: anywhere; }
+.detail .by { color: var(--muted); margin: 0 0 14px; }
+.by button, .link { background: none; border: 0; padding: 0; color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+.status-pick { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 14px; }
+.status-pick button { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 10px 4px; display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 12px; font-weight: 500; }
+.status-pick button svg { width: 20px; height: 20px; }
+.status-pick button[aria-pressed="true"] { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+.gallery { position: relative; margin-bottom: 14px; }
+.track { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; border-radius: 18px; background: var(--surface); border: 1px solid var(--line); }
+.track::-webkit-scrollbar { display: none; }
+.slide { flex: 0 0 100%; scroll-snap-align: center; height: 300px; display: flex; align-items: center; justify-content: center; padding: 10px; box-sizing: border-box; }
+.slide img { height: 100%; width: auto; max-width: 100%; object-fit: contain; border-radius: 16px; }
+.slide .nophoto { color: var(--muted); font-size: 13px; text-align: center; }
+.dots { display: flex; gap: 6px; justify-content: center; padding-top: 8px; }
+.dots i { width: 7px; height: 7px; border-radius: 50%; background: var(--line); display: block; }
+.dots i.on { background: var(--ink); }
+.arrow { position: absolute; top: 140px; transform: translateY(-50%); width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--line); background: var(--surface); opacity: .9; display: grid; place-items: center; }
+.arrow.l { left: 8px; } .arrow.r { right: 8px; }
+.arrow svg { width: 16px; height: 16px; }
+.bigsw { height: 160px; border-radius: 18px; border: 1px solid var(--line); display: grid; place-items: center; margin-bottom: 14px; }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; box-shadow: var(--shadow); margin-bottom: 12px; overflow: hidden; }
+.panel h3 { margin: 0; padding: 12px 14px 4px; font: 600 12px var(--font-body); text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+.kv { display: flex; justify-content: space-between; gap: 16px; padding: 9px 14px; border-top: 1px solid var(--line); align-items: center; }
+.panel h3 + .kv { border-top: 0; }
+.kv span:first-child { color: var(--muted); flex: none; }
+.kv span:last-child { text-align: right; min-width: 0; overflow-wrap: anywhere; display: inline-flex; align-items: center; gap: 8px; justify-content: flex-end; }
+.sw { width: 18px; height: 18px; border-radius: 50%; border: 1px solid var(--line); display: inline-block; flex: none; }
+.about { padding: 6px 14px 14px; font-size: 14px; white-space: pre-line; }
+.linkrow { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-top: 1px solid var(--line); text-decoration: none; color: var(--ink); background: transparent; border-left: 0; border-right: 0; border-bottom: 0; width: 100%; text-align: left; }
+.panel h3 + .linkrow { border-top: 0; }
+.linkrow svg.ext { margin-left: auto; width: 14px; height: 14px; color: var(--muted); }
+.linkrow .ig, .glyph { width: 22px; height: 22px; flex: none; }
+.tagrow { display: flex; flex-wrap: wrap; gap: 8px; padding: 4px 14px 14px; }
+.tagrow a { background: var(--surface-2); border-radius: 999px; padding: 6px 12px; font-size: 13px; text-decoration: none; }
+
+/* brand header */
+.bhead { display: flex; gap: 14px; align-items: center; padding: 6px 0 12px; }
+.bhead h2 { font: 700 26px/1.1 var(--font-display); margin: 0; overflow-wrap: anywhere; }
+.bhead .meta { color: var(--muted); font-size: 14px; margin-top: 4px; }
+.socials { display: flex; flex-wrap: wrap; gap: 10px; padding-bottom: 12px; align-items: center; }
+.soc { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 8px 12px; display: inline-flex; align-items: center; gap: 8px; text-decoration: none; color: var(--ink); font-size: 14px; }
+.soc svg { width: 20px; height: 20px; }
+
+/* filter sheet */
+.sheet-back { position: fixed; inset: 0; background: rgba(15, 10, 25, .45); z-index: 40; display: grid; align-items: end; justify-items: center; }
+.sheet { background: var(--bg); width: min(560px, 100%); max-height: 86vh; overflow: auto; border-radius: 20px 20px 0 0; padding: 14px 16px calc(18px + env(safe-area-inset-bottom, 0px)); border: 1px solid var(--line); }
+.sheet .hd { display: flex; align-items: center; gap: 10px; padding-bottom: 10px; }
+.sheet .hd b { font: 700 18px var(--font-display); flex: 1; text-align: center; }
+.sheet details { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; margin-bottom: 10px; }
+.sheet summary { padding: 12px 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; list-style: none; }
+.sheet summary::-webkit-details-marker { display: none; }
+.sheet summary .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
+.opt { display: flex; align-items: center; gap: 10px; width: 100%; border: 0; border-top: 1px solid var(--line); background: transparent; padding: 10px 14px; text-align: left; }
+.opt .ck { margin-left: auto; width: 16px; height: 16px; color: var(--accent); visibility: hidden; }
+.opt[aria-pressed="true"] .ck { visibility: visible; }
+.field { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; margin-bottom: 10px; }
+.field label { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.field .hint { color: var(--muted); font-size: 12px; margin-top: 6px; }
+.pricein { display: flex; gap: 8px; align-items: center; }
+.pricein input { width: 100%; min-width: 0; background: var(--surface-2); border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; }
+.switch { appearance: none; width: 44px; height: 26px; border-radius: 999px; background: var(--line); position: relative; flex: none; cursor: pointer; }
+.switch::after { content: ""; position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; border-radius: 50%; background: #fff; transition: transform .15s; }
+.switch:checked { background: var(--accent); }
+.switch:checked::after { transform: translateX(18px); }
+
+.toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(18px + env(safe-area-inset-bottom, 0px)); background: var(--ink); color: var(--bg); padding: 10px 16px; border-radius: 12px; font-size: 14px; z-index: 60; max-width: calc(100% - 32px); }
+.note { font-size: 13px; color: var(--muted); background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; margin: 4px 0 10px; }
+.note b { color: var(--ink); }
+.loading { padding: 60px 0; text-align: center; color: var(--muted); }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important; } }
+/* keep content clear of the notch / status bar */
+body { padding-top: env(safe-area-inset-top, 0px); }
+.tabs { top: env(safe-area-inset-top, 0px); }
+
+/* stop iOS Safari from zooming in when a field is focused */
+input, select, textarea { font-size: 16px; }
+
+/* comfortable touch targets (44px is the usual minimum) */
+.icon-btn { width: 44px; height: 44px; }
+.more { width: 44px; height: 44px; }
+.btn { min-height: 44px; }
+.seg button { min-height: 36px; padding: 6px 14px; }
+.opt, .pop button { min-height: 44px; }
+
+/* no sticky hover states or double-tap-zoom delay on touch */
+button, .tab, .row, .opt { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+
+@media (hover: none) {
+  .pop button:hover, .more:hover { background: transparent; }
+  .arrow { display: none; }            /* swipe the gallery instead */
+}
+
+@media (max-width: 480px) {
+  .top { flex-wrap: wrap; }
+  .brandmark { font-size: 21px; flex-basis: 100%; }
+  .tools { margin-left: auto; }
+  .slide { height: 240px; }
+  .detail h2, .bhead h2 { font-size: 22px; }
+  .status-pick { gap: 4px; }
+  .row { gap: 10px; padding: 10px 12px; }
+  .thumb { max-width: 48px; max-height: 48px; }
+  .sheet { max-height: 92vh; }
+  .pop { max-width: calc(100vw - 24px); }
+}
+@media (max-width: 600px) {
+  .bar { gap: 6px; }
+  .bar .search { flex: 1 1 0; min-width: 0; }          /* search takes whatever space is left */
+  .bar .btn { flex: none; width: 44px; padding: 0; justify-content: center; }
+  .bar .btn .lbl { display: none; }                    /* icon-only */
+  .bar .btn svg { width: 20px; height: 20px; }
+  .bar .anchor { flex: none; }
+  .bar .seg { flex: 1 0 100%; order: -1; }             /* Brands/Polishes toggle gets its own row above */
+  .bar .seg button { flex: 1; }
+}
+.icon-btn[hidden] { display: none; }
+.detail h2 { margin-top: 14px; }
+.bhead { padding-top: 14px; }
+</style>
+<style data-pagevault-runtime="true">
+/* pagevault styles */
+
+pagevault {
+  display: block;
+}
+
+pagevault[data-pv-v4] {
+  min-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pagevault-container {
+  text-align: center;
+  padding: 2rem;
+  border: 2px dashed #ccc;
+  border-radius: 8px;
+  background: #f9f9f9;
+  max-width: 400px;
+  margin: 2rem auto;
+}
+
+.pagevault-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.pagevault-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.pagevault-hint {
+  color: #666;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.pagevault-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.pagevault-input {
+  padding: 0.75rem 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.pagevault-input:focus {
+  border-color: #4CAF50;
+}
+
+.pagevault-button {
+  padding: 0.75rem 1rem;
+  background: linear-gradient(135deg, #4CAF50, #76B852);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.pagevault-button:hover {
+  opacity: 0.9;
+}
+
+.pagevault-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pagevault-error {
+  color: #dc3545;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+}
+
+.pagevault-remember {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.pagevault-remember input {
+  margin: 0;
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+  .pagevault-container { background: #1e1e2e; border-color: #444; }
+  .pagevault-title { color: #e0e0e0; }
+  .pagevault-hint { color: #999; }
+  .pagevault-input { background: #2a2a3a; border-color: #555; color: #e0e0e0; }
+  .pagevault-remember { color: #999; }
+}
+</style><script data-pagevault-runtime="true">
+/* pagevault runtime v4 */
+(function() {
+  'use strict';
+
+  var CONFIG = {
+    title: "Protected Content",
+    buttonText: "Unlock",
+    errorText: "Incorrect password",
+    placeholder: "Enter password",
+    usernamePlaceholder: "Enter username",
+    defaultRemember: "ask",
+    rememberDays: 0,
+    autoPrompt: true
+  };
+  function escapeHtml(str) {
+    return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  // v4 chunked crypto helpers for region + wrap decryption.
+  //
+  // Usage:
+  //   const result = await decryptV4(envelope, chunks, password, username, onProgress);
+  //   // result is {bytes: Uint8Array, meta: object} or null on failure.
+  //
+  // The envelope is the parsed JSON from a <script data-pv-meta>/<script id="pv-meta"> tag.
+  // chunks is an ordered array of base64 strings (region callers pass
+  // the chunk text content; wrap callers typically collect from the DOM
+  // and remove each element after decryption to free memory).
+
+  function _hexToBytes(hex) {
+    const bytes = new Uint8Array(hex.length / 2);
+    for (let i = 0; i < hex.length; i += 2) {
+      bytes[i / 2] = parseInt(hex.substr(i, 2), 16);
+    }
+    return bytes;
+  }
+
+  function _b64ToBytes(b64) {
+    const raw = atob(b64);
+    const bytes = new Uint8Array(raw.length);
+    for (let i = 0; i < raw.length; i++) bytes[i] = raw.charCodeAt(i);
+    return bytes;
+  }
+
+  function _deriveChunkIv(ivBase, chunkIndex) {
+    const iv = new Uint8Array(ivBase);
+    iv[8]  ^= (chunkIndex >>> 24) & 0xFF;
+    iv[9]  ^= (chunkIndex >>> 16) & 0xFF;
+    iv[10] ^= (chunkIndex >>> 8)  & 0xFF;
+    iv[11] ^=  chunkIndex         & 0xFF;
+    return iv;
+  }
+
+  async function _deriveKey(secret, salt) {
+    const enc = new TextEncoder();
+    const keyMaterial = await crypto.subtle.importKey(
+      'raw', enc.encode(secret), 'PBKDF2', false, ['deriveBits', 'deriveKey']
+    );
+    return crypto.subtle.deriveKey(
+      { name: 'PBKDF2', salt: salt, iterations: 310000, hash: 'SHA-256' },
+      keyMaterial,
+      { name: 'AES-GCM', length: 256 },
+      false,
+      ['decrypt']
+    );
+  }
+
+  // Content integrity hash used by region decryption to verify
+  // meta.content_hash against the decrypted text. Matches Python's
+  // content_hash(): first 16 bytes of SHA-256(utf-8(content)) as hex.
+  async function computeHash(content) {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(content);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    const hashArray = new Uint8Array(hashBuffer).slice(0, 16);
+    return Array.from(hashArray, b => b.toString(16).padStart(2, '0')).join('');
+  }
+
+  async function decryptV4(envelope, chunks, password, username, onProgress) {
+    try {
+      if (envelope.v !== 4) {
+        throw new Error('Unsupported envelope version: ' + envelope.v);
+      }
+
+      const salt = _hexToBytes(envelope.salt);
+      const secret = username ? username + ':' + password : password;
+      const wrappingKey = await _deriveKey(secret, salt);
+
+      // Unwrap CEK — try each key blob until one succeeds.
+      let cekRaw = null;
+      for (const keyBlob of envelope.keys) {
+        const blobIv = _b64ToBytes(keyBlob.iv);
+        const blobCt = _b64ToBytes(keyBlob.ct);
+        try {
+          cekRaw = await crypto.subtle.decrypt(
+            { name: 'AES-GCM', iv: blobIv }, wrappingKey, blobCt
+          );
+          break;
+        } catch (e) { continue; }
+      }
+      if (!cekRaw) throw new Error('No matching key found — wrong password?');
+
+      const cek = await crypto.subtle.importKey(
+        'raw', cekRaw, { name: 'AES-GCM', length: 256 }, false, ['decrypt']
+      );
+
+      // Decrypt metadata (independent of chunks).
+      const metaIv = _b64ToBytes(envelope.meta_iv);
+      const metaCt = _b64ToBytes(envelope.meta_ct);
+      const metaPlain = await crypto.subtle.decrypt(
+        { name: 'AES-GCM', iv: metaIv }, cek, metaCt
+      );
+      const meta = JSON.parse(new TextDecoder().decode(metaPlain));
+
+      // Decrypt chunks.
+      const ivBase = _b64ToBytes(envelope.iv_base);
+      const parts = [];
+      let totalLen = 0;
+      for (let i = 0; i < envelope.chunk_count; i++) {
+        const b64 = chunks[i];
+        if (typeof b64 !== 'string') {
+          throw new Error('Missing chunk ' + i);
+        }
+        const ct = _b64ToBytes(b64);
+        const chunkIv = _deriveChunkIv(ivBase, i);
+        const plain = await crypto.subtle.decrypt(
+          { name: 'AES-GCM', iv: chunkIv }, cek, ct
+        );
+        const plainBytes = new Uint8Array(plain);
+        parts.push(plainBytes);
+        totalLen += plainBytes.length;
+        if (onProgress) onProgress(i + 1, envelope.chunk_count);
+      }
+
+      // Concatenate chunks into one contiguous Uint8Array.
+      const bytes = new Uint8Array(totalLen);
+      let offset = 0;
+      for (const p of parts) {
+        bytes.set(p, offset);
+        offset += p.length;
+      }
+
+      return { bytes: bytes, meta: meta };
+    } catch (e) {
+      console.error('v4 decryption failed:', e);
+      return null;
+    }
+  }
+
+  // readV4FromScope — collect encrypted envelope + chunk texts from the DOM.
+  //
+  // Supports two layouts:
+  //   Region format: <script data-pv-meta> + <script data-pv-chunk="N"> siblings
+  //                  inside a <pagevault> element.
+  //   Wrap format:   <script id="pv-meta"> + <script id="pv-N"> at document level.
+  //
+  // Arguments:
+  //   scope — the element to search within (a <pagevault> el for region;
+  //            document for wrap).
+  //
+  // Returns {envelope, chunks} where envelope is the parsed JSON object and
+  // chunks is an ordered array of base64 strings, or null if the meta script
+  // is not found.  Each chunk element is removed from the DOM after being read
+  // to free memory.
+
+  function readV4FromScope(scope) {
+    // --- Locate meta script ---
+    var metaScript = null;
+
+    // Region layout: direct child with data-pv-meta attribute
+    if (scope.querySelector) {
+      metaScript = scope.querySelector('script[data-pv-meta]');
+    }
+    // Wrap layout fallback: <script id="pv-meta"> anywhere in document
+    if (!metaScript) {
+      metaScript = document.getElementById('pv-meta');
+    }
+    if (!metaScript) return null;
+
+    var envelope;
+    try {
+      envelope = JSON.parse(metaScript.textContent);
+    } catch (e) {
+      console.error('[pagevault] Invalid pv-meta JSON:', e);
+      return null;
+    }
+
+    var chunks = [];
+
+    // --- Collect chunks: region layout (data-pv-chunk attribute) ---
+    var chunkTags = [];
+    if (scope.querySelectorAll) {
+      var tagged = scope.querySelectorAll('script[data-pv-chunk]');
+      for (var i = 0; i < tagged.length; i++) {
+        var el = tagged[i];
+        var idx = parseInt(el.getAttribute('data-pv-chunk'), 10);
+        if (!Number.isNaN(idx)) {
+          chunkTags.push([idx, el.textContent || '', el]);
+        }
+      }
+    }
+
+    if (chunkTags.length > 0) {
+      // Sort by index and extract text; remove each element to free memory.
+      chunkTags.sort(function(a, b) { return a[0] - b[0]; });
+      for (var j = 0; j < chunkTags.length; j++) {
+        chunks.push(chunkTags[j][1]);
+        chunkTags[j][2].remove();
+      }
+    } else {
+      // --- Wrap layout fallback: <script id="pv-N"> ---
+      var count = envelope.chunk_count || 0;
+      for (var k = 0; k < count; k++) {
+        var chunkEl = document.getElementById('pv-' + k);
+        if (!chunkEl) {
+          console.error('[pagevault] Missing chunk element pv-' + k);
+          return null;
+        }
+        chunks.push(chunkEl.textContent || '');
+        chunkEl.remove();
+      }
+    }
+
+    return { envelope: envelope, chunks: chunks };
+  }
+
+  // Storage utilities
+  const STORAGE_KEY = 'pagevault_passwords';
+
+  function getStoredPasswords() {
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (!stored) return {};
+      const data = JSON.parse(stored);
+      // Check expiration
+      const now = Date.now();
+      const filtered = {};
+      for (const [key, value] of Object.entries(data)) {
+        if (!value.expires || value.expires > now) {
+          filtered[key] = value;
+        }
+      }
+      return filtered;
+    } catch {
+      return {};
+    }
+  }
+
+  function storeCredentials(password, username, remember) {
+    if (remember === 'none') return;
+    const cred = username ? { username, password } : { password };
+    if (remember === 'session') {
+      sessionStorage.setItem(STORAGE_KEY, JSON.stringify(cred));
+      return;
+    }
+    const data = getStoredPasswords();
+    const expires = CONFIG.rememberDays > 0
+      ? Date.now() + (CONFIG.rememberDays * 24 * 60 * 60 * 1000)
+      : null;
+    data[location.origin] = { ...cred, expires };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  }
+
+  function getStoredCredentials() {
+    // Check session first
+    const session = sessionStorage.getItem(STORAGE_KEY);
+    if (session) {
+      try {
+        const cred = JSON.parse(session);
+        return cred.password ? cred : { password: session };
+      } catch {
+        return { password: session };
+      }
+    }
+    // Check localStorage
+    const data = getStoredPasswords();
+    const entry = data[location.origin];
+    if (!entry) return null;
+    return entry.password ? entry : null;
+  }
+
+  function clearStoredPasswords() {
+    localStorage.removeItem(STORAGE_KEY);
+    sessionStorage.removeItem(STORAGE_KEY);
+  }
+
+  // URL fragment handling (only logout — password via URL removed for security)
+  function checkFragment() {
+    const hash = location.hash.slice(1);
+    if (!hash) return null;
+
+    if (hash === 'pagevault_logout') {
+      clearStoredPasswords();
+      // Navigate without the hash — works on file:// unlike history.replaceState
+      location.replace(location.pathname + location.search);
+      return 'logout';
+    }
+
+    return null;
+  }
+
+// === Script activation infrastructure ===
+  // Snapshot the original page methods ONCE at runtime load. All handlers
+  // share these — concurrent decryption is serialized via __pvActivationChain
+  // so the shims always restore the true originals, never another handler's shim.
+  var __pvOrigDocAddListener = document.addEventListener.bind(document);
+  var __pvOrigWinAddListener = window.addEventListener.bind(window);
+  var __pvOrigDocWrite = document.write.bind(document);
+  var __pvOrigDocWriteln = document.writeln.bind(document);
+  var __pvActivationChain = Promise.resolve();
+
+  // Re-execute scripts in a decrypted region. The browser does not run
+  // <script> tags inserted via innerHTML, so we re-create each one.
+  // Inline scripts run synchronously on replaceChild; external scripts
+  // (with src) load asynchronously — we wait for onload before the next.
+  // Lifecycle events (DOMContentLoaded, load) already fired before
+  // decryption, so we shim them, collect callbacks, and fire after
+  // activation. Errors in any script are caught and logged so the
+  // shims always restore via the finally block.
+  function __pvActivateContent(el, meta, done) {
+    var origOnload = window.onload;  // snapshot for change-detection
+    var dclCallbacks = [];
+    var wlCallbacks = [];
+
+    // Install shims (page-wide for the duration of activation)
+    document.write = function(s) {
+      if (s) console.warn('[pagevault] document.write() suppressed during activation:', s);
+    };
+    document.writeln = function(s) {
+      if (s) console.warn('[pagevault] document.writeln() suppressed during activation:', s);
+    };
+    document.addEventListener = function(type, fn, opts) {
+      if (type === 'DOMContentLoaded') dclCallbacks.push(fn);
+      else __pvOrigDocAddListener(type, fn, opts);
+    };
+    window.addEventListener = function(type, fn, opts) {
+      if (type === 'load') wlCallbacks.push(fn);
+      else __pvOrigWinAddListener(type, fn, opts);
+    };
+
+    function restoreShims() {
+      document.addEventListener = __pvOrigDocAddListener;
+      window.addEventListener = __pvOrigWinAddListener;
+      document.write = __pvOrigDocWrite;
+      document.writeln = __pvOrigDocWriteln;
+    }
+
+    // Permissive JS MIME-type detection (matches HTML spec)
+    function isExecutable(s) {
+      var t = (s.getAttribute('type') || '').toLowerCase();
+      if (!t) return true;
+      if (t === 'module') return true;
+      return /javascript|ecmascript|jscript/.test(t);
+    }
+
+    var scripts = Array.from(el.querySelectorAll('script'));
+
+    function finalize() {
+      restoreShims();
+      dclCallbacks.forEach(function(fn) {
+        try { fn(); } catch(e) { console.error('[pagevault] DOMContentLoaded callback error:', e); }
+      });
+      wlCallbacks.forEach(function(fn) {
+        try { fn(); } catch(e) { console.error('[pagevault] load callback error:', e); }
+      });
+      // Only re-fire onload if a decrypted script REPLACED it
+      if (typeof window.onload === 'function' && window.onload !== origOnload) {
+        try { window.onload(new Event('load')); } catch(e) { console.error('[pagevault] onload error:', e); }
+      }
+      el.dispatchEvent(new CustomEvent('pagevault:activated', {
+        bubbles: true,
+        detail: { element: el, meta: meta }
+      }));
+      done();
+    }
+
+    function activateNext(i) {
+      try {
+        // Loop through synchronous (inline) scripts; only recurse on async boundary
+        while (i < scripts.length) {
+          var old = scripts[i];
+          if (!isExecutable(old)) { i++; continue; }
+          if (!old.parentNode) { i++; continue; }  // ancestor was removed by an earlier script
+          var s = document.createElement('script');
+          for (var j = 0; j < old.attributes.length; j++) {
+            var a = old.attributes[j];
+            s.setAttribute(a.name, a.value);
+          }
+          var hasSrc = old.hasAttribute('src');
+          if (!hasSrc && old.textContent) s.textContent = old.textContent;
+          if (hasSrc) {
+            // Capture index and src in IIFE so closures don't share mutated state
+            (function(idx, srcUrl) {
+              s.onload = function() { activateNext(idx + 1); };
+              s.onerror = function() {
+                console.error('[pagevault] Failed to load:', srcUrl);
+                activateNext(idx + 1);
+              };
+            })(i, old.getAttribute('src'));
+            old.parentNode.replaceChild(s, old);
+            return;  // suspend until onload/onerror fires
+          }
+          old.parentNode.replaceChild(s, old);
+          i++;
+        }
+        finalize();
+      } catch (e) {
+        console.error('[pagevault] script activation error:', e);
+        try { finalize(); } catch(_) {}
+      }
+    }
+
+    activateNext(0);
+  }
+
+  // Element handler — uses a plain class instead of Custom Elements because
+  // the spec requires hyphenated names and <pagevault> has no hyphen.
+  // All values set via innerHTML are either:
+  //   - escapeHtml()-wrapped user strings (hint, title, placeholder, button text)
+  //   - static HTML template literals (form structure, lock icon)
+  //   - decrypted content from AES-256-GCM (trusted after authenticated decryption)
+  class PagevaultHandler {
+    constructor(el) {
+      this.el = el;
+      this.el._pvDecrypted = false;
+      // Snapshot v4 envelope + chunks before rendering the prompt
+      // (rendering clears innerHTML which would discard them).
+      // readV4FromScope is provided by core/chunks.js.
+      this._snapshot = readV4FromScope(el);
+      this._render();
+      this._tryAutoDecrypt();
+    }
+
+    _render() {
+      const el = this.el;
+      const hint = el.getAttribute('data-hint');
+      const title = el.getAttribute('data-title') || CONFIG.title;
+      const remember = el.getAttribute('data-remember') || CONFIG.defaultRemember;
+      const isUserMode = el.getAttribute('data-mode') === 'user';
+
+      el.innerHTML = `
+        <div class="pagevault-container">
+          <div class="pagevault-icon">🔒</div>
+          <div class="pagevault-title">${escapeHtml(title)}</div>
+          ${hint ? `<div class="pagevault-hint">${escapeHtml(hint)}</div>` : ''}
+          <form class="pagevault-form">
+            ${isUserMode ? `<input type="text" class="pagevault-input pagevault-username" placeholder="${escapeHtml(CONFIG.usernamePlaceholder)}" autocomplete="username">` : ''}
+            <input type="password" class="pagevault-input" placeholder="${escapeHtml(CONFIG.placeholder)}" autocomplete="current-password">
+            ${remember === 'ask' ? `
+              <label class="pagevault-remember">
+                <input type="checkbox" name="remember">
+                Remember on this device
+              </label>
+            ` : ''}
+            <button type="submit" class="pagevault-button">${escapeHtml(CONFIG.buttonText)}</button>
+            <div class="pagevault-error" style="display: none;"></div>
+          </form>
+        </div>
+      `;
+
+      const form = el.querySelector('form');
+      const passwordInput = el.querySelector('input[type="password"]');
+      const usernameInput = el.querySelector('.pagevault-username');
+      const error = el.querySelector('.pagevault-error');
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const password = passwordInput.value;
+        if (!password) return;
+        const username = usernameInput ? usernameInput.value : null;
+
+        // Capture checkbox state BEFORE decryption replaces innerHTML
+        const rememberCheckbox = el.querySelector('input[name="remember"]');
+        const wantsRemember = remember === 'local' || (rememberCheckbox && rememberCheckbox.checked);
+
+        const button = el.querySelector('button');
+        button.disabled = true;
+        button.textContent = 'Decrypting...';
+
+        const success = await this._decrypt(password, username);
+
+        if (!success) {
+          error.textContent = CONFIG.errorText;
+          error.style.display = 'block';
+          button.disabled = false;
+          button.textContent = CONFIG.buttonText;
+          passwordInput.value = '';
+          passwordInput.focus();
+        } else {
+          // Store credentials if requested
+          if (wantsRemember) {
+            storeCredentials(password, username, 'local');
+          } else if (remember === 'session') {
+            storeCredentials(password, username, 'session');
+          }
+        }
+      });
+
+      // Focus appropriate input if auto-prompt
+      if (CONFIG.autoPrompt) {
+        const focusTarget = usernameInput || passwordInput;
+        setTimeout(() => focusTarget.focus(), 100);
+      }
+    }
+
+    async _tryAutoDecrypt() {
+      // Check URL fragment (only logout supported)
+      const fragment = checkFragment();
+      if (fragment === 'logout') return;
+
+      // Try stored credentials
+      const cred = getStoredCredentials();
+      if (cred) {
+        await this._decrypt(cred.password, cred.username || null);
+      }
+    }
+
+    async _decrypt(password, username) {
+      const el = this.el;
+      if (!this._snapshot) return false;
+
+      const result = await decryptV4(
+        this._snapshot.envelope,
+        this._snapshot.chunks,
+        password,
+        username
+      );
+      if (result === null) return false;
+
+      const meta = result.meta || {};
+      if (meta.kind && meta.kind !== 'html_fragment') {
+        console.error('Unexpected envelope kind for region:', meta.kind);
+        return false;
+      }
+
+      // Decode UTF-8 text and strip trailing NUL padding (from --pad).
+      let content = new TextDecoder().decode(result.bytes);
+      content = content.replace(/\0+$/, '');
+
+      // Verify content hash if present in encrypted metadata.
+      const expectedHash = meta.content_hash;
+      if (expectedHash) {
+        const actualHash = await computeHash(content);
+        if (actualHash !== expectedHash) {
+          console.error('Content hash mismatch - decryption may be corrupted');
+          return false;
+        }
+      }
+
+      // Clear v4 attributes and reveal content.
+      el.removeAttribute('data-pv-v4');
+      el.removeAttribute('data-mode');
+      // Decrypted content is trusted — it was authenticated by AES-256-GCM
+      // (user encrypted their own content; AES-GCM provides authenticity)
+      el.innerHTML = content;
+      el._pvDecrypted = true;
+
+      // Fire decrypted event immediately — content is in the DOM,
+      // listeners that just need to know "the content is here" don't
+      // wait for script activation. A separate pagevault:activated
+      // event fires after all scripts have run.
+      el.dispatchEvent(new CustomEvent('pagevault:decrypted', {
+        bubbles: true,
+        detail: { element: el, meta: meta }
+      }));
+
+      // Serialize script activation across handlers via a page-level
+      // promise chain. Global shims (document.addEventListener,
+      // document.write, etc.) cannot be safely interleaved across
+      // concurrent decryptions, so we ensure only one activation runs
+      // at a time. See __pvActivateContent for the activation routine.
+      __pvActivationChain = __pvActivationChain.then(function() {
+        return new Promise(function(resolve) {
+          __pvActivateContent(el, meta, resolve);
+        });
+      });
+
+      return true;
+    }
+  }
+
+  // Initialize all v4-encrypted <pagevault> elements.
+  // Wrapped in DOMContentLoaded since the script is in <head> but the
+  // elements are in <body> — they don't exist yet at script parse time.
+  function initAll() {
+    document.querySelectorAll('pagevault[data-pv-v4]').forEach(function(el) {
+      if (!el._pvHandler) {
+        el._pvHandler = new PagevaultHandler(el);
+      }
+    });
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initAll);
+  } else {
+    initAll();
+  }
+
+})();
+</script></head><body><pagevault data-pv-v4="" data-remember="ask"><script data-pv-meta="" type="application/json">{"v": 4, "alg": "aes-256-gcm", "kdf": "pbkdf2-sha256", "iter": 310000, "salt": "fad127df5766a35c3294686f619c55e9", "keys": [{"iv": "/VLMIlmXkTK/xmw8", "ct": "dQZ+ijQ4t+XRV+VPvL5HJ/EUSNvPOnZDVkFRNzlodMA41pdmUnBEuYUdmj1WZhW1"}], "iv_base": "7uLY0GdzqegZRGFi", "chunk_size": 1048576, "chunk_count": 1, "total_size": 1099, "meta_iv": "+7Y2zK3DHXPtrTEn", "meta_ct": "h2VreLGjp9YCKySu9fj4sffudVvkrwr8EqaKThMGy4HaXTWxC74R+Ju1vBxiL5asoyRwTKAdCNAXdrJTY7uUkFP/iz+V+etmfpOecrvWYvOXVhziZWJwWiA+YLPPI78uAC0nMM3t7EbXTz72fJCJwm4YhIoNPvtisPlotDoRNb/ugGsuOepOV2xCmdvy1Z9u0xvBmPTrmpduJQS1AXOBO9pAU6kMVaB36I4MC0n/8WvxnJI="}</script><script data-pv-chunk="0" type="x-pv">GMyhbYLlPKugfq+g9RIo/CaQ7dC/GWj3hNZK4jnkuUjvHoYKnO16Qbqb9QE/SuJZsfsB13Hcie5G6tkUXpkM8vSDyfU/xpT7cb0dQ3oNiVDdNZ1/tjKoV/gncSFSeUv3/K+gu2IxATB1YVKKAJYC52M40mYs0yQ+YGyLRl/qrqa4bBRXCYU9q42oiJ3a2wPsXg7GVIcrfnlroHKPUCs5K+c39NorOaYqiYAdr8EHFu+xiFcs/WDVtd0IwzLiFhg6Sepj7VxAVD0vOg8yObl9sukQrNzKhIyZekeV9E9G4XneJkV+w6cOiFGVEGlNLM95D+T+6fhoD7fahQ/9yto++cgo9hJBtAviNcuqBgYArBeKYC5N1KbRaLLoVOzv/HptozxaxwbsdzOTBYN2MSsbqANR03A2qZnyK/aG7NotQpcnEX+W8Kt/SgAPUr0yZiuGodkNLNlKoLSU8aktAPvthSnGBoqUIIuV6ATxBKGCLkqG5icxAVdKwWGQHDyGnPpFE76ALyOH0P3aiQhzb99sXxlJn+PkW3Sa86qY6e15fANaEleacrEi8uG2Vlf4SAniHzTNbIRKd997ksJmFTQovGSLaYZFPVpfu+7f62qMPMwOutAdcZoaVKgb6xNGyJ0VCtU5m7czmn/qB+fhEJlbRcHMjfP4EHC7lx2HomKd4umKHCXp7WeJR85IDg2n+CukNvq2GgkNsK+xT4lrq61fWGuLmIF+ldMdXnK9ldtx0MgKQbMvIPgWgvRcKlhxnfzFdlmYvDPml7Ar/E0UM17c1v4nA5WpcTXMwleMZRv20dGH4djzeajFaWT8fpdwIAukkmHBG0dFQsc+PPNmp8V2adWBCsZylj7EppJoOqJBIU4BGoQYV2OnL2WiciE8OBMjwEY+jFVsBPFYJozzADS3iHq/r+8chLhmngLmgog/AUIMn04fNstzdo9MVpXH5DYEigjn/tvmJE1XEVmytLr0IoB6L6PU87eXxGUf7oxCZnjvYYcTvgfW2SJ6xkcLIv76ZFY4Ga+/62TMMYg3ce98U2FtR1uhWvtFaX2oakYSgpgg+KKEXXUETGie7qFEg88GLgCFgIkw2dq8wxMQswO1Z6rr+Lkq1lIjLZgF9szmxpOWYuGIfaUn/XYso9nVaM4GHbxz4Af1/SrfFe6L8NHp6thaFjg9HEOKSIjxhoqTCeEYeSOVau2ELLQk0clIzyQX/jkVtrWon0QY6c6cdlHS2py32nlrdOPwzj02ArDe32u8nfXPZAX6WOA1E+zop9Z/V/Urr10MXPX3FOvwDQgSHb2Lg+Q0YyBOw9XhgpSfTJlROYUIcL7ohJR7EXOGv8v+5S15J0k02xNaIVl1mOQb+ZMnDXdL/VHRzOQPrm7TAP8Vd1Dmkfl9s1520LL4V86XnS34epDM2NcMsWLtdDoYUaPO30IvNS4aXa4G/c6OhNmk2LjqWxen4U20oXbLaqZans/x6WF/Ka193/8=</script></pagevault></body></html>
