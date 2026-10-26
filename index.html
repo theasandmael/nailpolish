@@ -1,8 +1,8 @@
-<title>Polish Collection</title>
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="claude:viewport-fit-sides" content="cover">
-<link rel="shortcut icon" type="image/x-icon" href="resources/favicon.ico">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Figtree:wght@400;500;600&display=swap">
+<html><head><title>Polish Collection</title>
+<meta content="width=device-width, initial-scale=1, viewport-fit=cover" name="viewport"/>
+<meta content="cover" name="claude:viewport-fit-sides"/>
+<link href="resources/favicon.ico" rel="shortcut icon" type="image/x-icon"/>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&amp;family=Figtree:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
 <style>
 /* Layout: sticky header + tab bar over one scrolling column; lists in cards on a soft lavender wash. */
 :root {
@@ -303,25 +303,710 @@ button, .tab, .row, .opt { touch-action: manipulation; -webkit-tap-highlight-col
 .detail h2 { margin-top: 14px; }
 .bhead { padding-top: 14px; }
 </style>
+<style data-pagevault-runtime="true">
+/* pagevault styles */
 
-<div class="app" id="app">
-  <div class="top">
-    <h1 class="brandmark">Polish Collection<small id="tagline">A database of indie and boutique polish</small></h1>
-    <div class="tools">
-    <span id="who"></span>
-    <button class="icon-btn" id="backBtn" aria-label="Back" title="Back" hidden></button>
-    <button class="icon-btn" id="importBtn" aria-label="Import lists from a file" title="Import from a backup ZIP or CSV"></button>
-    <input type="file" id="importFile" accept=".zip,.csv,text/csv,application/zip" multiple hidden>
-    <button class="icon-btn" id="backupBtn" aria-label="Download a backup of all lists" title="Download backup (ZIP)"></button>
-    <button class="icon-btn" id="themeBtn" aria-label="Switch light or dark mode" title="Theme"></button>
-    </div>
-  </div>
-  <div id="notice"></div>
-  <div class="tabs" id="tabs" role="tablist"></div>
-  <div id="bar"></div>
-  <div id="content"><div class="loading">Loading the catalog…</div></div>
-</div>
-<div id="layer"></div>
+pagevault {
+  display: block;
+}
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-<script src="js/main.js" charset="utf-8"></script>
+pagevault[data-pv-v4] {
+  min-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pagevault-container {
+  text-align: center;
+  padding: 2rem;
+  border: 2px dashed #ccc;
+  border-radius: 8px;
+  background: #f9f9f9;
+  max-width: 400px;
+  margin: 2rem auto;
+}
+
+.pagevault-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.pagevault-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.pagevault-hint {
+  color: #666;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.pagevault-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.pagevault-input {
+  padding: 0.75rem 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.pagevault-input:focus {
+  border-color: #4CAF50;
+}
+
+.pagevault-button {
+  padding: 0.75rem 1rem;
+  background: linear-gradient(135deg, #4CAF50, #76B852);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.pagevault-button:hover {
+  opacity: 0.9;
+}
+
+.pagevault-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pagevault-error {
+  color: #dc3545;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+}
+
+.pagevault-remember {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.pagevault-remember input {
+  margin: 0;
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+  .pagevault-container { background: #1e1e2e; border-color: #444; }
+  .pagevault-title { color: #e0e0e0; }
+  .pagevault-hint { color: #999; }
+  .pagevault-input { background: #2a2a3a; border-color: #555; color: #e0e0e0; }
+  .pagevault-remember { color: #999; }
+}
+</style><script data-pagevault-runtime="true">
+/* pagevault runtime v4 */
+(function() {
+  'use strict';
+
+  var CONFIG = {
+    title: "Protected Content",
+    buttonText: "Unlock",
+    errorText: "Incorrect password",
+    placeholder: "Enter password",
+    usernamePlaceholder: "Enter username",
+    defaultRemember: "ask",
+    rememberDays: 0,
+    autoPrompt: true
+  };
+  function escapeHtml(str) {
+    return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  // v4 chunked crypto helpers for region + wrap decryption.
+  //
+  // Usage:
+  //   const result = await decryptV4(envelope, chunks, password, username, onProgress);
+  //   // result is {bytes: Uint8Array, meta: object} or null on failure.
+  //
+  // The envelope is the parsed JSON from a <script data-pv-meta>/<script id="pv-meta"> tag.
+  // chunks is an ordered array of base64 strings (region callers pass
+  // the chunk text content; wrap callers typically collect from the DOM
+  // and remove each element after decryption to free memory).
+
+  function _hexToBytes(hex) {
+    const bytes = new Uint8Array(hex.length / 2);
+    for (let i = 0; i < hex.length; i += 2) {
+      bytes[i / 2] = parseInt(hex.substr(i, 2), 16);
+    }
+    return bytes;
+  }
+
+  function _b64ToBytes(b64) {
+    const raw = atob(b64);
+    const bytes = new Uint8Array(raw.length);
+    for (let i = 0; i < raw.length; i++) bytes[i] = raw.charCodeAt(i);
+    return bytes;
+  }
+
+  function _deriveChunkIv(ivBase, chunkIndex) {
+    const iv = new Uint8Array(ivBase);
+    iv[8]  ^= (chunkIndex >>> 24) & 0xFF;
+    iv[9]  ^= (chunkIndex >>> 16) & 0xFF;
+    iv[10] ^= (chunkIndex >>> 8)  & 0xFF;
+    iv[11] ^=  chunkIndex         & 0xFF;
+    return iv;
+  }
+
+  async function _deriveKey(secret, salt) {
+    const enc = new TextEncoder();
+    const keyMaterial = await crypto.subtle.importKey(
+      'raw', enc.encode(secret), 'PBKDF2', false, ['deriveBits', 'deriveKey']
+    );
+    return crypto.subtle.deriveKey(
+      { name: 'PBKDF2', salt: salt, iterations: 310000, hash: 'SHA-256' },
+      keyMaterial,
+      { name: 'AES-GCM', length: 256 },
+      false,
+      ['decrypt']
+    );
+  }
+
+  // Content integrity hash used by region decryption to verify
+  // meta.content_hash against the decrypted text. Matches Python's
+  // content_hash(): first 16 bytes of SHA-256(utf-8(content)) as hex.
+  async function computeHash(content) {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(content);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    const hashArray = new Uint8Array(hashBuffer).slice(0, 16);
+    return Array.from(hashArray, b => b.toString(16).padStart(2, '0')).join('');
+  }
+
+  async function decryptV4(envelope, chunks, password, username, onProgress) {
+    try {
+      if (envelope.v !== 4) {
+        throw new Error('Unsupported envelope version: ' + envelope.v);
+      }
+
+      const salt = _hexToBytes(envelope.salt);
+      const secret = username ? username + ':' + password : password;
+      const wrappingKey = await _deriveKey(secret, salt);
+
+      // Unwrap CEK — try each key blob until one succeeds.
+      let cekRaw = null;
+      for (const keyBlob of envelope.keys) {
+        const blobIv = _b64ToBytes(keyBlob.iv);
+        const blobCt = _b64ToBytes(keyBlob.ct);
+        try {
+          cekRaw = await crypto.subtle.decrypt(
+            { name: 'AES-GCM', iv: blobIv }, wrappingKey, blobCt
+          );
+          break;
+        } catch (e) { continue; }
+      }
+      if (!cekRaw) throw new Error('No matching key found — wrong password?');
+
+      const cek = await crypto.subtle.importKey(
+        'raw', cekRaw, { name: 'AES-GCM', length: 256 }, false, ['decrypt']
+      );
+
+      // Decrypt metadata (independent of chunks).
+      const metaIv = _b64ToBytes(envelope.meta_iv);
+      const metaCt = _b64ToBytes(envelope.meta_ct);
+      const metaPlain = await crypto.subtle.decrypt(
+        { name: 'AES-GCM', iv: metaIv }, cek, metaCt
+      );
+      const meta = JSON.parse(new TextDecoder().decode(metaPlain));
+
+      // Decrypt chunks.
+      const ivBase = _b64ToBytes(envelope.iv_base);
+      const parts = [];
+      let totalLen = 0;
+      for (let i = 0; i < envelope.chunk_count; i++) {
+        const b64 = chunks[i];
+        if (typeof b64 !== 'string') {
+          throw new Error('Missing chunk ' + i);
+        }
+        const ct = _b64ToBytes(b64);
+        const chunkIv = _deriveChunkIv(ivBase, i);
+        const plain = await crypto.subtle.decrypt(
+          { name: 'AES-GCM', iv: chunkIv }, cek, ct
+        );
+        const plainBytes = new Uint8Array(plain);
+        parts.push(plainBytes);
+        totalLen += plainBytes.length;
+        if (onProgress) onProgress(i + 1, envelope.chunk_count);
+      }
+
+      // Concatenate chunks into one contiguous Uint8Array.
+      const bytes = new Uint8Array(totalLen);
+      let offset = 0;
+      for (const p of parts) {
+        bytes.set(p, offset);
+        offset += p.length;
+      }
+
+      return { bytes: bytes, meta: meta };
+    } catch (e) {
+      console.error('v4 decryption failed:', e);
+      return null;
+    }
+  }
+
+  // readV4FromScope — collect encrypted envelope + chunk texts from the DOM.
+  //
+  // Supports two layouts:
+  //   Region format: <script data-pv-meta> + <script data-pv-chunk="N"> siblings
+  //                  inside a <pagevault> element.
+  //   Wrap format:   <script id="pv-meta"> + <script id="pv-N"> at document level.
+  //
+  // Arguments:
+  //   scope — the element to search within (a <pagevault> el for region;
+  //            document for wrap).
+  //
+  // Returns {envelope, chunks} where envelope is the parsed JSON object and
+  // chunks is an ordered array of base64 strings, or null if the meta script
+  // is not found.  Each chunk element is removed from the DOM after being read
+  // to free memory.
+
+  function readV4FromScope(scope) {
+    // --- Locate meta script ---
+    var metaScript = null;
+
+    // Region layout: direct child with data-pv-meta attribute
+    if (scope.querySelector) {
+      metaScript = scope.querySelector('script[data-pv-meta]');
+    }
+    // Wrap layout fallback: <script id="pv-meta"> anywhere in document
+    if (!metaScript) {
+      metaScript = document.getElementById('pv-meta');
+    }
+    if (!metaScript) return null;
+
+    var envelope;
+    try {
+      envelope = JSON.parse(metaScript.textContent);
+    } catch (e) {
+      console.error('[pagevault] Invalid pv-meta JSON:', e);
+      return null;
+    }
+
+    var chunks = [];
+
+    // --- Collect chunks: region layout (data-pv-chunk attribute) ---
+    var chunkTags = [];
+    if (scope.querySelectorAll) {
+      var tagged = scope.querySelectorAll('script[data-pv-chunk]');
+      for (var i = 0; i < tagged.length; i++) {
+        var el = tagged[i];
+        var idx = parseInt(el.getAttribute('data-pv-chunk'), 10);
+        if (!Number.isNaN(idx)) {
+          chunkTags.push([idx, el.textContent || '', el]);
+        }
+      }
+    }
+
+    if (chunkTags.length > 0) {
+      // Sort by index and extract text; remove each element to free memory.
+      chunkTags.sort(function(a, b) { return a[0] - b[0]; });
+      for (var j = 0; j < chunkTags.length; j++) {
+        chunks.push(chunkTags[j][1]);
+        chunkTags[j][2].remove();
+      }
+    } else {
+      // --- Wrap layout fallback: <script id="pv-N"> ---
+      var count = envelope.chunk_count || 0;
+      for (var k = 0; k < count; k++) {
+        var chunkEl = document.getElementById('pv-' + k);
+        if (!chunkEl) {
+          console.error('[pagevault] Missing chunk element pv-' + k);
+          return null;
+        }
+        chunks.push(chunkEl.textContent || '');
+        chunkEl.remove();
+      }
+    }
+
+    return { envelope: envelope, chunks: chunks };
+  }
+
+  // Storage utilities
+  const STORAGE_KEY = 'pagevault_passwords';
+
+  function getStoredPasswords() {
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (!stored) return {};
+      const data = JSON.parse(stored);
+      // Check expiration
+      const now = Date.now();
+      const filtered = {};
+      for (const [key, value] of Object.entries(data)) {
+        if (!value.expires || value.expires > now) {
+          filtered[key] = value;
+        }
+      }
+      return filtered;
+    } catch {
+      return {};
+    }
+  }
+
+  function storeCredentials(password, username, remember) {
+    if (remember === 'none') return;
+    const cred = username ? { username, password } : { password };
+    if (remember === 'session') {
+      sessionStorage.setItem(STORAGE_KEY, JSON.stringify(cred));
+      return;
+    }
+    const data = getStoredPasswords();
+    const expires = CONFIG.rememberDays > 0
+      ? Date.now() + (CONFIG.rememberDays * 24 * 60 * 60 * 1000)
+      : null;
+    data[location.origin] = { ...cred, expires };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  }
+
+  function getStoredCredentials() {
+    // Check session first
+    const session = sessionStorage.getItem(STORAGE_KEY);
+    if (session) {
+      try {
+        const cred = JSON.parse(session);
+        return cred.password ? cred : { password: session };
+      } catch {
+        return { password: session };
+      }
+    }
+    // Check localStorage
+    const data = getStoredPasswords();
+    const entry = data[location.origin];
+    if (!entry) return null;
+    return entry.password ? entry : null;
+  }
+
+  function clearStoredPasswords() {
+    localStorage.removeItem(STORAGE_KEY);
+    sessionStorage.removeItem(STORAGE_KEY);
+  }
+
+  // URL fragment handling (only logout — password via URL removed for security)
+  function checkFragment() {
+    const hash = location.hash.slice(1);
+    if (!hash) return null;
+
+    if (hash === 'pagevault_logout') {
+      clearStoredPasswords();
+      // Navigate without the hash — works on file:// unlike history.replaceState
+      location.replace(location.pathname + location.search);
+      return 'logout';
+    }
+
+    return null;
+  }
+
+// === Script activation infrastructure ===
+  // Snapshot the original page methods ONCE at runtime load. All handlers
+  // share these — concurrent decryption is serialized via __pvActivationChain
+  // so the shims always restore the true originals, never another handler's shim.
+  var __pvOrigDocAddListener = document.addEventListener.bind(document);
+  var __pvOrigWinAddListener = window.addEventListener.bind(window);
+  var __pvOrigDocWrite = document.write.bind(document);
+  var __pvOrigDocWriteln = document.writeln.bind(document);
+  var __pvActivationChain = Promise.resolve();
+
+  // Re-execute scripts in a decrypted region. The browser does not run
+  // <script> tags inserted via innerHTML, so we re-create each one.
+  // Inline scripts run synchronously on replaceChild; external scripts
+  // (with src) load asynchronously — we wait for onload before the next.
+  // Lifecycle events (DOMContentLoaded, load) already fired before
+  // decryption, so we shim them, collect callbacks, and fire after
+  // activation. Errors in any script are caught and logged so the
+  // shims always restore via the finally block.
+  function __pvActivateContent(el, meta, done) {
+    var origOnload = window.onload;  // snapshot for change-detection
+    var dclCallbacks = [];
+    var wlCallbacks = [];
+
+    // Install shims (page-wide for the duration of activation)
+    document.write = function(s) {
+      if (s) console.warn('[pagevault] document.write() suppressed during activation:', s);
+    };
+    document.writeln = function(s) {
+      if (s) console.warn('[pagevault] document.writeln() suppressed during activation:', s);
+    };
+    document.addEventListener = function(type, fn, opts) {
+      if (type === 'DOMContentLoaded') dclCallbacks.push(fn);
+      else __pvOrigDocAddListener(type, fn, opts);
+    };
+    window.addEventListener = function(type, fn, opts) {
+      if (type === 'load') wlCallbacks.push(fn);
+      else __pvOrigWinAddListener(type, fn, opts);
+    };
+
+    function restoreShims() {
+      document.addEventListener = __pvOrigDocAddListener;
+      window.addEventListener = __pvOrigWinAddListener;
+      document.write = __pvOrigDocWrite;
+      document.writeln = __pvOrigDocWriteln;
+    }
+
+    // Permissive JS MIME-type detection (matches HTML spec)
+    function isExecutable(s) {
+      var t = (s.getAttribute('type') || '').toLowerCase();
+      if (!t) return true;
+      if (t === 'module') return true;
+      return /javascript|ecmascript|jscript/.test(t);
+    }
+
+    var scripts = Array.from(el.querySelectorAll('script'));
+
+    function finalize() {
+      restoreShims();
+      dclCallbacks.forEach(function(fn) {
+        try { fn(); } catch(e) { console.error('[pagevault] DOMContentLoaded callback error:', e); }
+      });
+      wlCallbacks.forEach(function(fn) {
+        try { fn(); } catch(e) { console.error('[pagevault] load callback error:', e); }
+      });
+      // Only re-fire onload if a decrypted script REPLACED it
+      if (typeof window.onload === 'function' && window.onload !== origOnload) {
+        try { window.onload(new Event('load')); } catch(e) { console.error('[pagevault] onload error:', e); }
+      }
+      el.dispatchEvent(new CustomEvent('pagevault:activated', {
+        bubbles: true,
+        detail: { element: el, meta: meta }
+      }));
+      done();
+    }
+
+    function activateNext(i) {
+      try {
+        // Loop through synchronous (inline) scripts; only recurse on async boundary
+        while (i < scripts.length) {
+          var old = scripts[i];
+          if (!isExecutable(old)) { i++; continue; }
+          if (!old.parentNode) { i++; continue; }  // ancestor was removed by an earlier script
+          var s = document.createElement('script');
+          for (var j = 0; j < old.attributes.length; j++) {
+            var a = old.attributes[j];
+            s.setAttribute(a.name, a.value);
+          }
+          var hasSrc = old.hasAttribute('src');
+          if (!hasSrc && old.textContent) s.textContent = old.textContent;
+          if (hasSrc) {
+            // Capture index and src in IIFE so closures don't share mutated state
+            (function(idx, srcUrl) {
+              s.onload = function() { activateNext(idx + 1); };
+              s.onerror = function() {
+                console.error('[pagevault] Failed to load:', srcUrl);
+                activateNext(idx + 1);
+              };
+            })(i, old.getAttribute('src'));
+            old.parentNode.replaceChild(s, old);
+            return;  // suspend until onload/onerror fires
+          }
+          old.parentNode.replaceChild(s, old);
+          i++;
+        }
+        finalize();
+      } catch (e) {
+        console.error('[pagevault] script activation error:', e);
+        try { finalize(); } catch(_) {}
+      }
+    }
+
+    activateNext(0);
+  }
+
+  // Element handler — uses a plain class instead of Custom Elements because
+  // the spec requires hyphenated names and <pagevault> has no hyphen.
+  // All values set via innerHTML are either:
+  //   - escapeHtml()-wrapped user strings (hint, title, placeholder, button text)
+  //   - static HTML template literals (form structure, lock icon)
+  //   - decrypted content from AES-256-GCM (trusted after authenticated decryption)
+  class PagevaultHandler {
+    constructor(el) {
+      this.el = el;
+      this.el._pvDecrypted = false;
+      // Snapshot v4 envelope + chunks before rendering the prompt
+      // (rendering clears innerHTML which would discard them).
+      // readV4FromScope is provided by core/chunks.js.
+      this._snapshot = readV4FromScope(el);
+      this._render();
+      this._tryAutoDecrypt();
+    }
+
+    _render() {
+      const el = this.el;
+      const hint = el.getAttribute('data-hint');
+      const title = el.getAttribute('data-title') || CONFIG.title;
+      const remember = el.getAttribute('data-remember') || CONFIG.defaultRemember;
+      const isUserMode = el.getAttribute('data-mode') === 'user';
+
+      el.innerHTML = `
+        <div class="pagevault-container">
+          <div class="pagevault-icon">🔒</div>
+          <div class="pagevault-title">${escapeHtml(title)}</div>
+          ${hint ? `<div class="pagevault-hint">${escapeHtml(hint)}</div>` : ''}
+          <form class="pagevault-form">
+            ${isUserMode ? `<input type="text" class="pagevault-input pagevault-username" placeholder="${escapeHtml(CONFIG.usernamePlaceholder)}" autocomplete="username">` : ''}
+            <input type="password" class="pagevault-input" placeholder="${escapeHtml(CONFIG.placeholder)}" autocomplete="current-password">
+            ${remember === 'ask' ? `
+              <label class="pagevault-remember">
+                <input type="checkbox" name="remember">
+                Remember on this device
+              </label>
+            ` : ''}
+            <button type="submit" class="pagevault-button">${escapeHtml(CONFIG.buttonText)}</button>
+            <div class="pagevault-error" style="display: none;"></div>
+          </form>
+        </div>
+      `;
+
+      const form = el.querySelector('form');
+      const passwordInput = el.querySelector('input[type="password"]');
+      const usernameInput = el.querySelector('.pagevault-username');
+      const error = el.querySelector('.pagevault-error');
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const password = passwordInput.value;
+        if (!password) return;
+        const username = usernameInput ? usernameInput.value : null;
+
+        // Capture checkbox state BEFORE decryption replaces innerHTML
+        const rememberCheckbox = el.querySelector('input[name="remember"]');
+        const wantsRemember = remember === 'local' || (rememberCheckbox && rememberCheckbox.checked);
+
+        const button = el.querySelector('button');
+        button.disabled = true;
+        button.textContent = 'Decrypting...';
+
+        const success = await this._decrypt(password, username);
+
+        if (!success) {
+          error.textContent = CONFIG.errorText;
+          error.style.display = 'block';
+          button.disabled = false;
+          button.textContent = CONFIG.buttonText;
+          passwordInput.value = '';
+          passwordInput.focus();
+        } else {
+          // Store credentials if requested
+          if (wantsRemember) {
+            storeCredentials(password, username, 'local');
+          } else if (remember === 'session') {
+            storeCredentials(password, username, 'session');
+          }
+        }
+      });
+
+      // Focus appropriate input if auto-prompt
+      if (CONFIG.autoPrompt) {
+        const focusTarget = usernameInput || passwordInput;
+        setTimeout(() => focusTarget.focus(), 100);
+      }
+    }
+
+    async _tryAutoDecrypt() {
+      // Check URL fragment (only logout supported)
+      const fragment = checkFragment();
+      if (fragment === 'logout') return;
+
+      // Try stored credentials
+      const cred = getStoredCredentials();
+      if (cred) {
+        await this._decrypt(cred.password, cred.username || null);
+      }
+    }
+
+    async _decrypt(password, username) {
+      const el = this.el;
+      if (!this._snapshot) return false;
+
+      const result = await decryptV4(
+        this._snapshot.envelope,
+        this._snapshot.chunks,
+        password,
+        username
+      );
+      if (result === null) return false;
+
+      const meta = result.meta || {};
+      if (meta.kind && meta.kind !== 'html_fragment') {
+        console.error('Unexpected envelope kind for region:', meta.kind);
+        return false;
+      }
+
+      // Decode UTF-8 text and strip trailing NUL padding (from --pad).
+      let content = new TextDecoder().decode(result.bytes);
+      content = content.replace(/\0+$/, '');
+
+      // Verify content hash if present in encrypted metadata.
+      const expectedHash = meta.content_hash;
+      if (expectedHash) {
+        const actualHash = await computeHash(content);
+        if (actualHash !== expectedHash) {
+          console.error('Content hash mismatch - decryption may be corrupted');
+          return false;
+        }
+      }
+
+      // Clear v4 attributes and reveal content.
+      el.removeAttribute('data-pv-v4');
+      el.removeAttribute('data-mode');
+      // Decrypted content is trusted — it was authenticated by AES-256-GCM
+      // (user encrypted their own content; AES-GCM provides authenticity)
+      el.innerHTML = content;
+      el._pvDecrypted = true;
+
+      // Fire decrypted event immediately — content is in the DOM,
+      // listeners that just need to know "the content is here" don't
+      // wait for script activation. A separate pagevault:activated
+      // event fires after all scripts have run.
+      el.dispatchEvent(new CustomEvent('pagevault:decrypted', {
+        bubbles: true,
+        detail: { element: el, meta: meta }
+      }));
+
+      // Serialize script activation across handlers via a page-level
+      // promise chain. Global shims (document.addEventListener,
+      // document.write, etc.) cannot be safely interleaved across
+      // concurrent decryptions, so we ensure only one activation runs
+      // at a time. See __pvActivateContent for the activation routine.
+      __pvActivationChain = __pvActivationChain.then(function() {
+        return new Promise(function(resolve) {
+          __pvActivateContent(el, meta, resolve);
+        });
+      });
+
+      return true;
+    }
+  }
+
+  // Initialize all v4-encrypted <pagevault> elements.
+  // Wrapped in DOMContentLoaded since the script is in <head> but the
+  // elements are in <body> — they don't exist yet at script parse time.
+  function initAll() {
+    document.querySelectorAll('pagevault[data-pv-v4]').forEach(function(el) {
+      if (!el._pvHandler) {
+        el._pvHandler = new PagevaultHandler(el);
+      }
+    });
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initAll);
+  } else {
+    initAll();
+  }
+
+})();
+</script></head><body><pagevault data-pv-v4="" data-remember="ask"><script data-pv-meta="" type="application/json">{"v": 4, "alg": "aes-256-gcm", "kdf": "pbkdf2-sha256", "iter": 310000, "salt": "fad127df5766a35c3294686f619c55e9", "keys": [{"iv": "MjSy6KIMrwIxsioT", "ct": "AOQrn/ligk8MOUV6JFv3oLN0RBi5OLqXaCVYLQFHCF4nZgPMTBOMjFkVRkRI5ppY"}], "iv_base": "+yg5PcmVqP68+Hy2", "chunk_size": 1048576, "chunk_count": 1, "total_size": 1099, "meta_iv": "oDmIWnXhHT+MPdIs", "meta_ct": "LdWn4uqdb0nWkH//l3eu4jixnaIxPdhOLgTfPASGHl5qoAgLOc9BH629ywoiGHu6kVf3F4H3DVGvZX5Za+I4YXz0kEwPFgyV/hq1nI8l5s0ftX+qX8K3GX0FldLmlLcQPFb7kBAHgxdkckwvgQLqP7rRDkt72TIVNHrGhNTlpwoRWpk+PP+1WuLNenH5BfAjxbKubzkqpHUsT4Pa6c5flo9BGjAlY96FAuOwrUzIy15XkNM="}</script><script data-pv-chunk="0" type="x-pv">T+H54D1cXcgHeQX/VVjbqZEsyGtnO98nk3ldjKVtb3BFsmAQyrTFtR155thXgWsB7svHKU5pKrveSrZFlNk7pz34MfUhYE+G6aq9+Zx9daafXGz9I9OlU0vXam5FLD4E+f9/R95bGmYWjxD56ohvbgOgMGuwaeU/icb+Av9kXBTMb6pNyF1maWvZJBKt/oa+ovpQkHFNTelQ/fnuxvlmV4x/hLri46MuLNuUYOBh9ieTLT9Ia4+g3k39M7kJIfn8StCsSg4yAqVuSzqb1rWrpCjYk0w2+kM8TksJRS5D8t1HbI28LpPGoiLJhAS6QDUOn61zGVYWT2xabxrml7jM9dG5yBVnEpfdog26cFH/4H/AzMd/ZxO6a5yx0s1Wsbj2ciMszTVxSl6aYfcxcA7vc1wCTA8P9S9LRWx1crYmBqnlVO5UHPNBPUHYmVqPWgbiSMrzhdzg4I4qk6y+mOJHdybz/6fMnd9CrCCiT4kw80aah0dq19JP77Ajcem0w7K+9mq0/Afb3R/wwJiNg/BJSKW7FLAt8WWl48+urqtzc1Y0lZAsPjqp6Ow1XSoO4mIEP86XsvjBzio0pKku7VSQd2WUB4WPzOSNz9NYOPdoRh4lYsUIXpGXYEE32dvj2IYhRiqUwr4eIo26XgK1VEKiaE9SpTfqR8rlqDeHqBw3qqC27p+jMdxeQR9SeStEwqK+rdnWtRG7+a/NuHRag91zKL/EelpnQX7MHzg/bvslvEiYzek0PYYGTZ9iXAgzPdM0MD73IB7lGEgFwm7/oCHf/tNj4lIxzTKQwSbAsYb+XJJnybH+jwOrR4Oltd26PbnoVcFiFMCgai7KlIomF1sqk/hEZBgtXnbR9lu+s1N+tBktfylBXCqblJE+upf/Uuslhg0TUvFtETdyBm2fRbg4shirFaHN9liS7/b1AVQclW19VhCclLXZZKKIHeKPaYktdRtMrmO8mtctF36601tH4+9/++lGLv0vKZoroCjQqj2aut1j/L1qKGZqAtBcbB2HKjWo5pWgmX30L9lfnzrq0QIMrzHvgZze4GOw56R/tLVMvZK0GimjO8T0Yv9SDXbV3R0/TCWKUoUqDHx2pikhNHVsTkuJIAcabR0EDwBVNqeKL/s78RsdnlhpIUh94zLcOOpCgnsHwcV1+m2z+0ksoBXs02mv7a5m8rA/M2ZzmffsPMTFLWtsCdkRd3FbQKP6BuOdURt128CWG5vsty2vVKO2TYCx0fOOK0YHgkzTF4WEu/ugnybRcHoMc+4D6QENIs5nkTsPSls8JMdauGPtiCuJzhEMJyRx/UMPZ+HN8U7pkWvUto7XEniG07Z6ZTdmlz+rTR4qEa1mppUC34Ejrzt+1TOOZ2qX0DznYb7RdDVyiUpsFGSU7U/dIvfh1lE+l3cuU0QocOcMAR47DbW+L/ueg4AexSoO20BTMuP40qO5/HXMuWQQ01H9mHWBGkhtmxv/B4Xbq7AJtBY=</script></pagevault></body></html>
