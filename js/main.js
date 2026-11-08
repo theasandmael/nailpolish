@@ -1,6 +1,50 @@
 "use strict";
-/* ---------- tiny helpers ---------- */
+
+/* =====================================================================
+   Polish Collection
+
+    1. Constants
+    2. DOM & icon helpers
+    3. Utilities
+    4. State, storage & catalog
+    5. Lists & account sync
+    6. Queries (search, filter, group)
+    7. Small UI pieces (toast, menus, thumbnails, rows, bulk bar)
+    8. Views (tabs, toolbar, lists, brand, polish detail, filter sheet)
+    9. Navigation
+   10. CSV import / export
+   11. Start-up
+   ===================================================================== */
+
+/* ---------- 1. constants ---------- */
+const STATUS = {
+  wishlist: { label: "Wishlist", icon: "wishlist", next: "stash" },
+  stash: { label: "Stash", icon: "stash", next: "destash" },
+  destash: { label: "Destash", icon: "destash", next: "archive" },
+  archive: { label: "Archive", icon: "archive", next: null },
+};
+const STATUS_ORDER = ["wishlist", "stash", "destash", "archive"];
+const TABS = [["stash", "Stash"], ["wishlist", "Wishlist"], ["database", "Database"], ["destash", "Destash"], ["archive", "Archive"]];
+const SORTS = [["brand", "Brand"], ["color", "Color"], ["finish", "Finish"], ["collection", "Collection"], ["collectionType", "Collection Type"]];
+const SWATCH = {
+  Red: "#d14545", Orange: "#e08c3d", Yellow: "#e0c740", Gold: "#d4ad47", Green: "#61b36b", Blue: "#4585d9",
+  Purple: "#9466d9", Pink: "#e06bad", Brown: "#8c6145", Silver: "#c2c4cc", Gray: "#9e9e9e", White: "#f5f5f0",
+  Black: "#2e2e2e", Clear: "#dbe9f2",
+};
+const COLOR_ORDER = Object.keys(SWATCH);
+const PSTATUS = { reg: "Regular", disc: "Discontinued", le: "Limited edition" };
+const MONEY = new Intl.NumberFormat(undefined, { style: "currency", currency: "USD" });
+const NEW_TAB = { target: "_blank", rel: "noopener" };
+const EMPTY_MESSAGES = {
+  stash: ["Your stash is empty", "Open a polish in the Database and add it to your stash."],
+  wishlist: ["Your wishlist is empty", "Add polishes you want from the Database."],
+  destash: ["Nothing to destash", "Move polishes here when you plan to sell them."],
+  archive: ["Archive is empty", "Destashed polishes can be moved here."],
+};
+
+/* ---------- 2. DOM & icon helpers ---------- */
 const $ = (s, r = document) => r.querySelector(s);
+
 function h(tag, attrs, ...kids) {
   const el = document.createElement(tag);
   if (attrs) for (const [k, v] of Object.entries(attrs)) {
@@ -17,65 +61,54 @@ function h(tag, attrs, ...kids) {
   }
   return el;
 }
-function svg(inner, cls) {
+
+function fromHtml(html) {
   const t = document.createElement("template");
-  t.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"${cls ? ` class="${cls}"` : ""} aria-hidden="true">${inner}</svg>`;
+  t.innerHTML = html;
   return t.content.firstChild;
 }
+
 const ICON = {
   stash: '<path d="M12 3 3 8l9 5 9-5-9-5Z"/><path d="m3 13 9 5 9-5"/>',
-  wishlist: '<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.600-7 10-7 10Z"/>',
-  database: '<ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v6c0 1.700 3.600 3 8 3s8-1.300 8-3V6"/><path d="M4 12v6c0 1.700 3.600 3 8 3s8-1.300 8-3v-6"/>',
-  destash: '<path d="M4 7h16"/><path d="M6 7v12a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V7"/><path d="M9 7V4h6v3"/><path d="M12 16v-5m-2.500 2.500L12 11l2.500 2.500"/>',
+  wishlist: '<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10Z"/>',
+  database: '<ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v6c0 1.7 3.6 3 8 3s8-1.3 8-3V6"/><path d="M4 12v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"/>',
+  destash: '<path d="M4 7h16"/><path d="M6 7v12a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V7"/><path d="M9 7V4h6v3"/><path d="M12 16v-5m-2.5 2.5L12 11l2.5 2.5"/>',
   archive: '<rect x="3" y="4" width="18" height="5" rx="1"/><path d="M5 9v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V9"/><path d="M10 13h4"/>',
-  search: '<circle cx="11" cy="11" r="7"/><path d="m20 20-3.500-3.500"/>',
+  search: '<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>',
   sort: '<path d="M7 4v16m0 0-3-3m3 3 3-3"/><path d="M17 20V4m0 0-3 3m3-3 3 3"/>',
   filter: '<path d="M4 5h16l-6 8v6l-4-2v-4L4 5Z"/>',
   export: '<path d="M12 15V3m0 0L8 7m4-4 4 4"/><path d="M5 12v7a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-7"/>',
-  more: '<circle cx="5" cy="12" r="1.200"/><circle cx="12" cy="12" r="1.200"/><circle cx="19" cy="12" r="1.200"/>',
+  import: '<path d="M12 3v12m0 0-4-4m4 4 4-4"/><path d="M5 12v7a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-7"/>',
+  more: '<circle cx="5" cy="12" r="1.2"/><circle cx="12" cy="12" r="1.2"/><circle cx="19" cy="12" r="1.2"/>',
   chev: '<path d="m9 6 6 6-6 6"/>',
   back: '<path d="m15 6-6 6 6 6"/>',
   check: '<path d="m5 12 5 5 9-10"/>',
   ext: '<path d="M7 17 17 7M9 7h8v8"/>',
-  globe: '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.500 3 14.500 0 18M12 3c-3 3.500-3 14.500 0 18"/>',
-  pin: '<path d="M12 21s7-6.100 7-11a7 7 0 1 0-14 0c0 4.900 7 11 7 11Z"/><circle cx="12" cy="10" r="2.500"/>',
-  sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.900 4.900l1.400 1.400m11.400 11.400 1.400 1.400M2 12h2m16 0h2M4.900 19.100l1.400-1.400M17.700 6.300l1.400-1.400"/>',
-  moon: '<path d="M20 14.500A8 8 0 0 1 9.500 4 8 8 0 1 0 20 14.500Z"/>',
+  globe: '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18"/>',
+  sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4M2 12h2m16 0h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
+  moon: '<path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5Z"/>',
   auto: '<circle cx="12" cy="12" r="9"/><path d="M12 3v18" /><path d="M12 3a9 9 0 0 1 0 18Z" fill="currentColor"/>',
   trash: '<path d="M4 7h16M10 11v6m4-6v6M6 7l1 12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1l1-12M9 7V4h6v3"/>',
-  import: '<path d="M12 3v12m0 0-4-4m4 4 4-4"/><path d="M5 12v7a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-7"/>',
-  hash: '<path d="M5 9h14M5 15h14M10 4 8 20m8-16-2 16"/>',
-  tag: '<path d="M3 12V4h8l10 10-8 8L3 12Z"/><circle cx="7.500" cy="8.500" r="1.200"/>',
 };
+const svg = (inner, cls) => fromHtml(`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"${cls ? ` class="${cls}"` : ""} aria-hidden="true">${inner}</svg>`);
 const ic = (name, cls) => svg(ICON[name], cls);
-const IG_GLYPH = () => { const t = document.createElement("template");
-  t.innerHTML = '<svg class="glyph" viewBox="0 0 24 24" aria-hidden="true"><defs><linearGradient id="igg" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#8a3ab9"/><stop offset=".5" stop-color="#e1306c"/><stop offset="1" stop-color="#fcaf45"/></linearGradient></defs><rect x="2.500" y="2.500" width="19" height="19" rx="5.500" fill="none" stroke="url(#igg)" stroke-width="2"/><circle cx="12" cy="12" r="4.300" fill="none" stroke="url(#igg)" stroke-width="2"/><circle cx="17.200" cy="6.800" r="1.200" fill="url(#igg)"/></svg>';
-  return t.content.firstChild; };
-const FB_GLYPH = () => { const t = document.createElement("template");
-  t.innerHTML = '<svg class="glyph" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="#1877f2"/><path d="M13.200 20v-6.600h2.200l.4-2.700h-2.600V8.900c0-.8.300-1.300 1.400-1.300h1.300V5.200c-.2 0-1-.1-2-.1-2 0-3.400 1.200-3.400 3.500v2.100H8.300v2.700h2.200V20h2.700Z" fill="#fff"/></svg>';
-  return t.content.firstChild; };
 
-const STATUS = {
-  wishlist: { label: "Wishlist", icon: "wishlist", next: "stash" },
-  stash: { label: "Stash", icon: "stash", next: "destash" },
-  destash: { label: "Destash", icon: "destash", next: "archive" },
-  archive: { label: "Archive", icon: "archive", next: null },
-};
-const STATUS_ORDER = ["wishlist", "stash", "destash", "archive"];
-const SWATCH = {
-  Red: "#d14545", Orange: "#e08c3d", Yellow: "#e0c740", Gold: "#d4ad47", Green: "#61b36b", Blue: "#4585d9",
-  Purple: "#9466d9", Pink: "#e06bad", Brown: "#8c6145", Silver: "#c2c4cc", Gray: "#9e9e9e", White: "#f5f5f0",
-  Black: "#2e2e2e", Clear: "#dbe9f2",
-};
-const COLOR_ORDER = ["Red","Orange","Yellow","Gold","Green","Blue","Purple","Pink","Brown","Silver","Gray","White","Black","Clear"];
-const PSTATUS = { reg: "Regular", disc: "Discontinued", le: "Limited edition" };
-const MONEY = new Intl.NumberFormat(undefined, { style: "currency", currency: "USD" });
+const IG_GLYPH = () => fromHtml('<svg class="glyph" viewBox="0 0 24 24" aria-hidden="true"><defs><linearGradient id="igg" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#8a3ab9"/><stop offset=".5" stop-color="#e1306c"/><stop offset="1" stop-color="#fcaf45"/></linearGradient></defs><rect x="2.5" y="2.5" width="19" height="19" rx="5.5" fill="none" stroke="url(#igg)" stroke-width="2"/><circle cx="12" cy="12" r="4.3" fill="none" stroke="url(#igg)" stroke-width="2"/><circle cx="17.2" cy="6.8" r="1.2" fill="url(#igg)"/></svg>');
+const FB_GLYPH = () => fromHtml('<svg class="glyph" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="#1877f2"/><path d="M13.2 20v-6.6h2.2l.4-2.7h-2.6V8.9c0-.8.3-1.3 1.4-1.3h1.3V5.2c-.2 0-1-.1-2-.1-2 0-3.4 1.2-3.4 3.5v2.1H8.3v2.7h2.2V20h2.7Z" fill="#fff"/></svg>');
+
+/* ---------- 3. utilities ---------- */
 const cmp = (a, b) => String(a).localeCompare(String(b), undefined, { numeric: true, sensitivity: "base" });
+const titleCase = t => t.replace(/\b\w/g, c => c.toUpperCase());
+const polishWord = n => (n === 1 ? "polish" : "polishes");
+const today = () => new Date().toISOString().slice(0, 10);
+const parsePrice = t => { const v = parseFloat(String(t).trim().replace(",", ".")); return Number.isFinite(v) && v >= 0 ? v : null; };
 
 function foldKey(t) {
-  return String(t).normalize("NFD").replace(/\p{M}/gu, "").toLowerCase().replace(/['\u2019]/g, "");
+  return String(t).normalize("NFD").replace(/\p{M}/gu, "").toLowerCase().replace(/['’]/g, "");
 }
-function hashtag(t) { return foldKey(t).replace(/[^\p{L}\p{N}]/gu, ""); }
+const makeKey = (brand, name) => foldKey(brand + "|" + name);
+const hashtag = t => foldKey(t).replace(/[^\p{L}\p{N}]/gu, "");
+
 function countryText(raw) {
   const v = (raw || "").trim(); if (!v) return null;
   if (/^[A-Za-z]{2}$/.test(v)) {
@@ -99,23 +132,27 @@ function fbUrl(raw) {
   v = v.replace(/^\/+|\/+$/g, ""); return v ? "https://www.facebook.com/groups/" + v : null;
 }
 
-/* ---------- state ---------- */
+/* ---------- 4. state, storage & catalog ---------- */
+const emptyFilters = () => ({ finishes: new Set(), colors: new Set(), inStock: false, min: "", max: "" });
+
 const state = {
   tab: "stash", dbMode: "brands", search: "", sort: "brand",
-  filters: { finishes: new Set(), colors: new Set(), inStock: false, min: "", max: "" },
+  filters: emptyFilters(),
   nav: [],                    // detail stack: {type:"polish",id} | {type:"brand",name}
   open: {},                   // expanded groups: key -> bool
   lists: new Map(),           // polish key -> status
-  catalog: null, extra: {}, shards: {}, sel: null,   // sel: Set of polish keys while bulk-editing
+  catalog: false, extra: {}, shards: {},
+  sel: null,                  // Set of polish keys while bulk-editing, else null
 };
+const currentNav = () => state.nav[state.nav.length - 1];
+
 const store = {
   get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
   set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} },
 };
 
-/* ---------- catalog ---------- */
 let BRANDS = [], P = [], BY_ID = new Map(), BY_KEY = new Map();
-const pkey = p => foldKey(p.brand.name + "|" + p.name);
+
 function buildCatalog(data) {
   BRANDS = data.brands.map(b => ({ ...b, count: 0 }));
   P = data.polishes.map(r => {
@@ -124,15 +161,21 @@ function buildCatalog(data) {
       ctype: r[8], price: r[9], stock: r[11], pstatus: r[12], image: r[13], url: r[14], dupes: r[15], month: r[16] };
     p.search = foldKey(`${brand.name} ${p.name} ${p.collection || ""}`);
     p.ppm = p.price && brand.bottle ? p.price / brand.bottle : null;
-    p.key = pkey(p);
+    p.key = makeKey(brand.name, p.name);
     return p;
   });
   BY_ID = new Map(P.map(p => [p.id, p]));
   BY_KEY = new Map(P.map(p => [p.key, p]));
 }
+// Finds a polish by brand + name, falling back to its id when the name still matches.
+function findPolish(id, brand, name) {
+  const byKey = BY_KEY.get(makeKey(brand, name));
+  if (byKey) return byKey;
+  const byId = BY_ID.get(Number(id));
+  return byId && foldKey(byId.name) === foldKey(name) ? byId : null;
+}
 function matchesSearch(p, q) {
-  const words = foldKey(q).split(/\s+/).filter(Boolean);
-  return words.every(w => p.search.includes(w));
+  return foldKey(q).split(/\s+/).filter(Boolean).every(w => p.search.includes(w));
 }
 function releaseText(p) {
   const m = p.month && p.month >= 1 && p.month <= 12
@@ -141,9 +184,11 @@ function releaseText(p) {
   return m || (p.year ? String(p.year) : null);
 }
 const statusOf = p => state.lists.get(p.key) || null;
+const listOf = s => P.filter(p => statusOf(p) === s).sort((a, b) => cmp(a.brand.name, b.brand.name) || cmp(a.name, b.name));
 
-/* ---------- lists: private per signed-in person, else this browser ---------- */
-const sync = { ready: false, db: null, ref: null, ok: false, name: "", timer: null, writing: false, dirty: false, skipEcho: 0 };
+/* ---------- 5. lists: private per signed-in person, else this browser ---------- */
+const sync = { ready: false, ref: null, ok: false, id: null, name: "", avatar: "", timer: null, writing: false, dirty: false };
+
 function listsToDoc() {
   const doc = { v: 1 };
   for (const s of STATUS_ORDER) doc[s] = [];
@@ -154,16 +199,14 @@ function docToLists(doc) {
   const m = new Map();
   for (const s of STATUS_ORDER) for (const entry of (doc && doc[s]) || []) {
     const [id, brand, ...rest] = String(entry).split("|");
-    const name = rest.join("|");
-    const byName = BY_KEY.get(foldKey(brand + "|" + name));
-    const byId = BY_ID.get(Number(id));
-    const p = byName || (byId && foldKey(byId.name) === foldKey(name) ? byId : null);
+    const p = findPolish(id, brand, rest.join("|"));
     if (p) m.set(p.key, s);
   }
   return m;
 }
-function saveLocal() { store.set("lists:v1", JSON.stringify(listsToDoc())); }
+const saveLocal = () => store.set("lists:v1", JSON.stringify(listsToDoc()));
 function loadLocal() { try { return docToLists(JSON.parse(store.get("lists:v1") || "null")); } catch (e) { return new Map(); } }
+
 function setStatus(p, status) {
   if (status) state.lists.set(p.key, status); else state.lists.delete(p.key);
   persist(); renderAll();
@@ -214,120 +257,17 @@ async function initAccount() {
   sync.ready = true; renderNotice(); renderWho(); renderAll();
 }
 
-/* ---------- theme ---------- */
-function applyTheme(mode) {
-  const root = document.documentElement;
-  if (mode === "light" || mode === "dark") root.setAttribute("data-theme", mode); else root.removeAttribute("data-theme");
-  const b = $("#themeBtn"); b.replaceChildren(ic(mode === "dark" ? "moon" : mode === "light" ? "sun" : "auto"));
-  b.title = "Theme: " + (mode || "system");
-}
-let themeMode = store.get("theme") || "system";
-applyTheme(themeMode);
-$("#backupBtn").replaceChildren(ic("export"));
-$("#backupBtn").addEventListener("click", exportBackup);
-$("#importBtn").replaceChildren(ic("import"));
-$("#importBtn").addEventListener("click", () => $("#importFile").click());
-$("#importFile").addEventListener("change", e => { const fs = [...e.target.files]; e.target.value = ""; if (fs.length) importFiles(fs); });
-$("#themeBtn").addEventListener("click", () => {
-  themeMode = themeMode === "system" ? "light" : themeMode === "light" ? "dark" : "system";
-  store.set("theme", themeMode); applyTheme(themeMode);
-});
+/* ---------- 6. queries: scope, filter, group ---------- */
+function listScope() { return currentNav()?.type === "brand" ? "brand" : state.tab; }
 
-/* ---------- header bits ---------- */
-function renderWho() {
-  const box = $("#who"); box.replaceChildren();
-  if (sync.ok) box.append(h("span", { class: "chip" }, sync.avatar ? h("img", { src: sync.avatar, alt: "" }) : null, h("span", null, sync.name || "Signed in")));
-}
-function renderNotice() {
-  const n = $("#notice"); n.replaceChildren();
-  if (sync.ready && !sync.ok) n.append(h("div", { class: "note" }, h("b", null, "Lists are saved in this browser only. "),
-    typeof claude !== "undefined"
-      ? "Open this page while signed in to claude.ai to keep private lists in your account that follow you across devices."
-      : "Use the download button at the top to keep a backup copy."));
-}
-function toast(msg) {
-  const t = h("div", { class: "toast", role: "status" }, msg);
-  document.body.append(t); setTimeout(() => t.remove(), 3600);
-}
-
-/* ---------- tabs ---------- */
-const TABS = [["stash", "Stash"], ["wishlist", "Wishlist"], ["database", "Database"], ["destash", "Destash"], ["archive", "Archive"]];
-function renderTabs() {
-  const counts = {}; for (const s of STATUS_ORDER) counts[s] = 0;
-  for (const s of state.lists.values()) if (counts[s] != null) counts[s]++;
-  const box = $("#tabs"); box.replaceChildren();
-  for (const [id, label] of TABS) {
-    const showCount = id !== "database";
-    box.append(h("button", { class: "tab", role: "tab", "aria-selected": String(state.tab === id), onclick: () => switchTab(id) },
-      ic(id), h("span", { class: "label" }, label),
-      showCount && counts[id] ? h("span", { class: "count" }, counts[id]) : null));
-  }
-}
-function switchTab(id) {
-  exitSelect(); state.tab = id; state.nav = []; state.search = ""; state.sort = "brand";
-  state.filters = { finishes: new Set(), colors: new Set(), inStock: false, min: "", max: "" };
-  renderAll(); window.scrollTo({ top: 0 });
-}
-
-/* ---------- bulk edit ---------- */
-function exitSelect() { state.sel = null; }
-function startSelect() { state.sel = new Set(); renderAll(); }
-function applyBulk(status) {
-  const keys = [...state.sel];
-  for (const k of keys) { if (status) state.lists.set(k, status); else state.lists.delete(k); }
-  persist(); exitSelect(); renderAll();
-  toast(status ? `${keys.length} moved to ${STATUS[status].label}` : `${keys.length} removed from this list`);
-}
-function renderBulk() {
-  let bar = $("#bulk");
-  if (!state.sel) { if (bar) bar.remove(); document.body.classList.remove("selecting"); return; }
-  if (!bar) { bar = h("div", { id: "bulk", role: "toolbar", "aria-label": "Bulk edit" }); document.body.append(bar); }
-  document.body.classList.add("selecting");
-  const n = state.sel.size, inStatusTab = state.tab !== "database";
-  const add = h("button", { class: "btn primary", "data-pop": "1", disabled: n ? null : true }, ic("stash"), inStatusTab ? "Move to…" : "Add to…");
-  add.addEventListener("click", () => popMenu(add, STATUS_ORDER.map(s => ({ label: STATUS[s].label, icon: STATUS[s].icon, run: () => applyBulk(s) }))));
-  const all = filtered(), allOn = all.length > 0 && all.every(p => state.sel.has(p.key));
-  const selAll = h("button", { class: "btn", onclick: () => { allOn ? state.sel.clear() : all.forEach(p => state.sel.add(p.key)); renderContent(); renderBulk(); } }, allOn ? "Deselect all" : "Select all");
-  bar.replaceChildren(add, h("span", { class: "count" }, n ? `${n} selected` : "Select polishes"), selAll,
-    ...(inStatusTab ? [h("button", { class: "btn danger", disabled: n ? null : true, onclick: () => applyBulk(null) }, ic("trash"), "Remove")] : []));
-}
-$("#backBtn").replaceChildren(ic("back"));
-$("#backBtn").addEventListener("click", back);
-function renderBack() { $("#backBtn").hidden = state.nav.length === 0; }
-/* ---------- popup menus ---------- */
-let openPop = null;
-function closePop() { if (openPop) { openPop.remove(); openPop = null; } }
-document.addEventListener("click", e => { if (openPop && !openPop.contains(e.target) && !e.target.closest("[data-pop]")) closePop(); });
-document.addEventListener("keydown", e => { if (e.key === "Escape") closePop(); });
-function popMenu(anchorBtn, items, alignRight) {
-  closePop();
-  const pop = h("div", { class: "pop", role: "menu" },
-    items.map(it => h("button", { role: "menuitem", "aria-checked": it.checked ? "true" : null, onclick: () => { closePop(); it.run(); } },
-      it.icon ? ic(it.icon) : null, it.label, it.checked ? ic("check") : null)));
-  document.body.append(pop); openPop = pop;
-  const r = anchorBtn.getBoundingClientRect(), pw = pop.offsetWidth, ph = pop.offsetHeight;
-  let left = alignRight ? r.right - pw : r.left;
-  left = Math.max(8, Math.min(left, window.innerWidth - pw - 8));
-  let top = r.bottom + 6;
-  if (top + ph > window.innerHeight - 8) top = Math.max(8, r.top - ph - 6);
-  pop.style.left = left + "px"; pop.style.top = top + "px";
-}
-window.addEventListener("scroll", () => closePop(), { passive: true });
-
-/* ---------- list data ---------- */
-const parsePrice = t => { const v = parseFloat(String(t).trim().replace(",", ".")); return Number.isFinite(v) && v >= 0 ? v : null; };
-function listScope() {
-  if (state.nav.length && state.nav[state.nav.length - 1].type === "brand") return "brand";
-  return state.tab === "database" ? "database" : state.tab;
-}
 function basePool() {
-  const nav = state.nav[state.nav.length - 1];
   const scope = listScope();
-  if (scope === "brand") return P.filter(p => p.brand.name === nav.name);
+  if (scope === "brand") return P.filter(p => p.brand.name === currentNav().name);
   if (scope === "database") return P;
-  const want = scope === "stash" ? "stash" : scope;
-  return P.filter(p => statusOf(p) === want);
+  return P.filter(p => statusOf(p) === scope);
 }
+const filtersActive = () => { const f = state.filters; return f.finishes.size || f.colors.size || f.inStock || parsePrice(f.min) != null || parsePrice(f.max) != null; };
+
 function filtered() {
   const f = state.filters, lo = parsePrice(f.min), hi = parsePrice(f.max);
   return basePool().filter(p => {
@@ -343,13 +283,14 @@ function filtered() {
     return true;
   });
 }
-const filtersActive = () => { const f = state.filters; return f.finishes.size || f.colors.size || f.inStock || parsePrice(f.min) != null || parsePrice(f.max) != null; };
+
 const collThenName = (a, b) => {
   const ca = a.collection || "", cb = b.collection || "";
   if (ca !== cb) { if (!ca) return 1; if (!cb) return -1; return cmp(ca, cb); }
   return cmp(a.name, b.name);
 };
 const brandCollName = (a, b) => cmp(a.brand.name, b.brand.name) || collThenName(a, b);
+const colorRank = c => { const i = COLOR_ORDER.indexOf(c); return i < 0 ? 99 : i; };
 
 function groupsFor(items) {
   const map = new Map();
@@ -358,13 +299,14 @@ function groupsFor(items) {
     switch (state.sort) {
       case "brand": add(p.brand.name, p); break;
       case "color": if (p.base.length) p.base.forEach(c => add(c, p)); else add("Uncategorized Color", p); break;
-      case "finish": if (p.finishes.length) p.finishes.forEach(f => add(f.replace(/\b\w/g, c => c.toUpperCase()), p)); else add("Unspecified Finish", p); break;
+      case "finish": if (p.finishes.length) p.finishes.forEach(f => add(titleCase(f), p)); else add("Unspecified Finish", p); break;
       case "collectionType": add(p.ctype || "Unspecified Type", p); break;
       case "collection": add(p.collection || "Uncategorized Collection", p); break;
     }
   }
-  const out = [...map].map(([title, ps]) => ({ title, polishes: state.sort === "brand" ? ps.sort(collThenName) : ps.sort(brandCollName) }));
-  if (state.sort === "color") out.sort((a, b) => (COLOR_ORDER.indexOf(a.title) + 99 * (COLOR_ORDER.indexOf(a.title) < 0)) - (COLOR_ORDER.indexOf(b.title) + 99 * (COLOR_ORDER.indexOf(b.title) < 0)));
+  const byBrand = state.sort === "brand";
+  const out = [...map].map(([title, ps]) => ({ title, polishes: ps.sort(byBrand ? collThenName : brandCollName) }));
+  if (state.sort === "color") out.sort((a, b) => colorRank(a.title) - colorRank(b.title));
   else out.sort((a, b) => cmp(a.title, b.title));
   return out;
 }
@@ -375,7 +317,51 @@ function splitCollections(items) {
   return { groups: [...map].sort((a, b) => cmp(a[0], b[0])), loose };
 }
 
-/* ---------- thumbnails ---------- */
+/* ---------- 7. small UI pieces ---------- */
+
+/* toast, header bits */
+function toast(msg) {
+  const t = h("div", { class: "toast", role: "status" }, msg);
+  document.body.append(t); setTimeout(() => t.remove(), 3600);
+}
+function renderWho() {
+  const box = $("#who"); box.replaceChildren();
+  if (sync.ok) box.append(h("span", { class: "chip" }, sync.avatar ? h("img", { src: sync.avatar, alt: "" }) : null, h("span", null, sync.name || "Signed in")));
+}
+function renderNotice() {
+  const n = $("#notice"); n.replaceChildren();
+  if (sync.ready && !sync.ok) n.append(h("div", { class: "note" }, h("b", null, "Lists are saved in this browser only. "),
+    typeof claude !== "undefined"
+      ? "Open this page while signed in to claude.ai to keep private lists in your account that follow you across devices."
+      : "Use the download button at the top to keep a backup copy."));
+}
+
+/* theme */
+function applyTheme(mode) {
+  const root = document.documentElement;
+  if (mode === "light" || mode === "dark") root.setAttribute("data-theme", mode); else root.removeAttribute("data-theme");
+  const b = $("#themeBtn"); b.replaceChildren(ic(mode === "dark" ? "moon" : mode === "light" ? "sun" : "auto"));
+  b.title = "Theme: " + (mode || "system");
+}
+
+/* popup menus */
+let openPop = null;
+function closePop() { if (openPop) { openPop.remove(); openPop = null; } }
+function popMenu(anchorBtn, items, alignRight) {
+  closePop();
+  const pop = h("div", { class: "pop", role: "menu" },
+    items.map(it => h("button", { role: "menuitem", "aria-checked": it.checked ? "true" : null, onclick: () => { closePop(); it.run(); } },
+      it.icon ? ic(it.icon) : null, it.label, it.checked ? ic("check") : null)));
+  document.body.append(pop); openPop = pop;
+  const r = anchorBtn.getBoundingClientRect(), pw = pop.offsetWidth, ph = pop.offsetHeight;
+  let left = alignRight ? r.right - pw : r.left;
+  left = Math.max(8, Math.min(left, window.innerWidth - pw - 8));
+  let top = r.bottom + 6;
+  if (top + ph > window.innerHeight - 8) top = Math.max(8, r.top - ph - 6);
+  pop.style.left = left + "px"; pop.style.top = top + "px";
+}
+
+/* thumbnails */
 function thumb(p, size = 46) {
   const stroke = p.base.length ? SWATCH[p.base[0]] : null;
   const el = h("div", { class: "thumb", style: `width:${size}px;height:${size}px;${stroke ? `border-color:${stroke}` : ""}` });
@@ -396,9 +382,9 @@ function brandThumb(b, size = 46) {
   return el;
 }
 
-/* ---------- rows ---------- */
+/* polish rows */
 function polishRow(p, opts) {
-  const strong = state.tab === "destash" && listScope() === "destash";
+  const strong = listScope() === "destash";
   const side = h("div", { class: "side" + (strong ? " strong" : "") },
     p.price != null ? h("span", { class: "price" }, MONEY.format(p.price)) : null,
     p.ppm != null ? h("span", { class: "perml" }, MONEY.format(p.ppm) + "/mL") : null,
@@ -420,12 +406,6 @@ function polishRow(p, opts) {
   wrap.append(h("span", { class: "anchor" }, more));
   return wrap;
 }
-function togglePick(p, row) {
-  const on = !state.sel.has(p.key);
-  on ? state.sel.add(p.key) : state.sel.delete(p.key);
-  row.classList.toggle("picked", on); row.querySelector(".main").setAttribute("aria-pressed", String(on));
-  renderBulk();
-}
 function rowMenu(btn, p) {
   const cur = statusOf(p), items = [];
   const nx = cur && STATUS[cur].next;
@@ -435,7 +415,116 @@ function rowMenu(btn, p) {
   popMenu(btn, items, true);
 }
 
-/* ---------- main list ---------- */
+/* bulk edit */
+function exitSelect() { state.sel = null; }
+function startSelect() { state.sel = new Set(); renderAll(); }
+function togglePick(p, row) {
+  const on = !state.sel.has(p.key);
+  on ? state.sel.add(p.key) : state.sel.delete(p.key);
+  row.classList.toggle("picked", on); row.querySelector(".main").setAttribute("aria-pressed", String(on));
+  renderBulk();
+}
+function applyBulk(status) {
+  const keys = [...state.sel];
+  for (const k of keys) { if (status) state.lists.set(k, status); else state.lists.delete(k); }
+  persist(); exitSelect(); renderAll();
+  toast(status ? `${keys.length} moved to ${STATUS[status].label}` : `${keys.length} removed from this list`);
+}
+function renderBulk() {
+  let bar = $("#bulk");
+  if (!state.sel) { if (bar) bar.remove(); document.body.classList.remove("selecting"); return; }
+  if (!bar) { bar = h("div", { id: "bulk", role: "toolbar", "aria-label": "Bulk edit" }); document.body.append(bar); }
+  document.body.classList.add("selecting");
+  const n = state.sel.size, inStatusTab = state.tab !== "database";
+  const add = h("button", { class: "btn primary", "data-pop": "1", disabled: n ? null : true }, ic("stash"), inStatusTab ? "Move to…" : "Add to…");
+  add.addEventListener("click", () => popMenu(add, STATUS_ORDER.map(s => ({ label: STATUS[s].label, icon: STATUS[s].icon, run: () => applyBulk(s) }))));
+  const all = filtered(), allOn = all.length > 0 && all.every(p => state.sel.has(p.key));
+  const selAll = h("button", { class: "btn", onclick: () => { allOn ? state.sel.clear() : all.forEach(p => state.sel.add(p.key)); renderContent(); renderBulk(); } }, allOn ? "Deselect all" : "Select all");
+  bar.replaceChildren(add, h("span", { class: "count" }, n ? `${n} selected` : "Select polishes"), selAll,
+    ...(inStatusTab ? [h("button", { class: "btn danger", disabled: n ? null : true, onclick: () => applyBulk(null) }, ic("trash"), "Remove")] : []));
+}
+
+/* ---------- 8. views ---------- */
+
+/* top-level render */
+function renderAll() {
+  const nav = currentNav();
+  if (state.sel && ((nav && nav.type === "polish") || (state.tab === "database" && state.dbMode === "brands" && !nav))) exitSelect();
+  renderTabs(); renderBar(); renderContent(); renderBulk(); renderBack();
+}
+function renderAllTop() { renderAll(); window.scrollTo({ top: 0 }); }
+
+/* tabs & back button */
+function renderTabs() {
+  const counts = Object.fromEntries(STATUS_ORDER.map(s => [s, 0]));
+  for (const s of state.lists.values()) if (counts[s] != null) counts[s]++;
+  const box = $("#tabs"); box.replaceChildren();
+  for (const [id, label] of TABS) {
+    const showCount = id !== "database";
+    box.append(h("button", { class: "tab", role: "tab", "aria-selected": String(state.tab === id), onclick: () => switchTab(id) },
+      ic(id), h("span", { class: "label" }, label),
+      showCount && counts[id] ? h("span", { class: "count" }, counts[id]) : null));
+  }
+}
+function renderBack() { $("#backBtn").hidden = state.nav.length === 0; }
+
+/* toolbar: search, mode toggle, sort, filter, select, CSV */
+function renderBar() {
+  const box = $("#bar"); box.replaceChildren();
+  if (currentNav()?.type === "polish") return;
+  const inBrand = listScope() === "brand";
+  const showBrandsGrid = state.tab === "database" && state.dbMode === "brands" && !inBrand;
+
+  const input = h("input", { id: "q", type: "search", placeholder: window.matchMedia("(max-width: 600px)").matches ? "Search" : "Search brand, shade or collection", value: state.search, "aria-label": "Search" });
+  let t;
+  input.addEventListener("input", () => { clearTimeout(t); t = setTimeout(() => { state.search = input.value; renderContent(); renderBulk(); }, 140); });
+  const bar = h("div", { class: "bar" }, h("label", { class: "search" }, ic("search"), input));
+
+  if (state.tab === "database" && !inBrand) {
+    bar.append(h("div", { class: "seg", role: "group" },
+      h("button", { "aria-pressed": String(state.dbMode === "brands"), onclick: () => { state.dbMode = "brands"; renderAll(); } }, "Brands"),
+      h("button", { "aria-pressed": String(state.dbMode === "polishes"), onclick: () => { state.dbMode = "polishes"; renderAll(); } }, "Polishes")));
+  }
+  if (!showBrandsGrid) {
+    if (!inBrand) {
+      const sortLabel = "Sort: " + SORTS.find(s => s[0] === state.sort)[1];
+      const sb = h("button", { class: "btn", "data-pop": "1", "aria-label": sortLabel, title: sortLabel }, ic("sort"), h("span", { class: "lbl" }, sortLabel));
+      sb.addEventListener("click", () => popMenu(sb, SORTS.map(s => ({ label: s[1], checked: state.sort === s[0], run: () => { state.sort = s[0]; renderAll(); } }))));
+      bar.append(h("span", { class: "anchor" }, sb));
+    }
+    bar.append(h("button", { class: "btn" + (filtersActive() ? " on" : ""), "aria-label": "Filter", title: "Filter", onclick: openFilters }, ic("filter"), h("span", { class: "lbl" }, "Filter")));
+    const selLabel = state.sel ? "Done" : "Select";
+    bar.append(h("button", { class: "btn" + (state.sel ? " on" : ""), "aria-label": selLabel + " (bulk edit)", title: selLabel, onclick: () => { if (state.sel) { exitSelect(); renderAll(); } else startSelect(); } }, ic("check"), h("span", { class: "lbl" }, selLabel)));
+    if (["stash", "wishlist", "destash"].includes(state.tab) && !inBrand)
+      bar.append(h("button", { class: "btn", "aria-label": "Download this list as CSV", title: "Download this list as CSV", onclick: exportCsv }, ic("export"), h("span", { class: "lbl" }, "CSV")));
+  }
+  box.append(bar);
+}
+
+/* main content */
+function renderContent() {
+  const box = $("#content"); box.replaceChildren();
+  if (!state.catalog) { box.append(h("div", { class: "loading" }, "Loading the catalog…")); return; }
+  const nav = currentNav();
+  if (nav && nav.type === "polish") { box.append(polishDetail(BY_ID.get(nav.id))); return; }
+
+  if (nav && nav.type === "brand") box.append(brandHeader(BRANDS.find(b => b.name === nav.name)));
+  else if (state.tab === "database" && state.dbMode === "brands") { renderBrandList(box); return; }
+
+  const items = filtered();
+  const total = items.reduce((s, p) => s + (p.price || 0), 0);
+  const parts = [h("span", null, h("b", null, items.length), " " + polishWord(items.length))];
+  if (STATUS_ORDER.includes(state.tab) && !nav && total > 0) parts.push(h("span", null, "Total value ", h("b", null, MONEY.format(total))));
+  box.append(h("div", { class: "summary" }, parts));
+  if (!items.length) { const [a, b] = emptyMessage(); box.append(h("div", { class: "empty" }, h("b", null, a), b)); return; }
+  box.append(renderList(items));
+}
+function emptyMessage() {
+  if (state.search || filtersActive()) return ["No matches", "Try fewer words or clear the filters."];
+  return EMPTY_MESSAGES[state.tab] || ["Nothing here", ""];
+}
+
+/* grouped list */
 function groupOpen(key, defaultOpen) { return key in state.open ? state.open[key] : defaultOpen; }
 function toggleGroup(key, defaultOpen) { state.open[key] = !groupOpen(key, defaultOpen); renderContent(); }
 
@@ -462,91 +551,30 @@ function renderList(items) {
     const card = h("div", { class: "card" });
     card.append(collectionBlocks(items.sort(collThenName), "brand"));
     frag.append(card);
-  } else {
-    for (const g of groupsFor(items)) {
-      const k = `g|${state.tab}|${state.sort}|${g.title}`, open = groupOpen(k, !bigDefaultCollapsed);
-      const card = h("div", { class: "card" },
-        h("button", { class: "ghead", "aria-expanded": String(open), onclick: () => toggleGroup(k, !bigDefaultCollapsed) },
-          state.sort === "color" && SWATCH[g.title] ? h("span", { class: "sw", style: `background:${SWATCH[g.title]}` }) : null,
-          ic("chev", "chev"), h("span", { class: "gt" }, g.title), h("span", { class: "n" }, g.polishes.length)));
-      if (open) {
-        if (state.sort === "brand") card.append(collectionBlocks(g.polishes, g.title));
-        else g.polishes.forEach(p => card.append(polishRow(p, { showBrand })));
-      }
-      frag.append(card);
+    return frag;
+  }
+  for (const g of groupsFor(items)) {
+    const k = `g|${state.tab}|${state.sort}|${g.title}`, open = groupOpen(k, !bigDefaultCollapsed);
+    const card = h("div", { class: "card" },
+      h("button", { class: "ghead", "aria-expanded": String(open), onclick: () => toggleGroup(k, !bigDefaultCollapsed) },
+        state.sort === "color" && SWATCH[g.title] ? h("span", { class: "sw", style: `background:${SWATCH[g.title]}` }) : null,
+        ic("chev", "chev"), h("span", { class: "gt" }, g.title), h("span", { class: "n" }, g.polishes.length)));
+    if (open) {
+      if (state.sort === "brand") card.append(collectionBlocks(g.polishes, g.title));
+      else g.polishes.forEach(p => card.append(polishRow(p, { showBrand })));
     }
+    frag.append(card);
   }
   return frag;
 }
 
-function emptyMessage() {
-  if (state.search || filtersActive()) return ["No matches", "Try fewer words or clear the filters."];
-  switch (state.tab) {
-    case "stash": return ["Your stash is empty", "Open a polish in the Database and add it to your stash."];
-    case "wishlist": return ["Your wishlist is empty", "Add polishes you want from the Database."];
-    case "destash": return ["Nothing to destash", "Move polishes here when you plan to sell them."];
-    case "archive": return ["Archive is empty", "Destashed polishes can be moved here."];
-    default: return ["Nothing here", ""];
-  }
-}
-
-function renderBar() {
-  const box = $("#bar"); box.replaceChildren();
-  if (state.nav.length && state.nav[state.nav.length - 1].type === "polish") return;
-  const inBrand = listScope() === "brand";
-  const showBrandsGrid = state.tab === "database" && state.dbMode === "brands" && !inBrand;
-
-  const input = h("input", { id: "q", type: "search", placeholder: window.matchMedia("(max-width: 600px)").matches ? "Search" : "Search brand, shade or collection", value: state.search, "aria-label": "Search" });  let t; input.addEventListener("input", () => { clearTimeout(t); t = setTimeout(() => { state.search = input.value; renderContent(); renderBulk(); }, 140); });
-  const bar = h("div", { class: "bar" }, h("label", { class: "search" }, ic("search"), input));
-
-  if (state.tab === "database" && !inBrand) {
-    bar.append(h("div", { class: "seg", role: "group" },
-      h("button", { "aria-pressed": String(state.dbMode === "brands"), onclick: () => { state.dbMode = "brands"; renderAll(); } }, "Brands"),
-      h("button", { "aria-pressed": String(state.dbMode === "polishes"), onclick: () => { state.dbMode = "polishes"; renderAll(); } }, "Polishes")));
-  }
-  if (!showBrandsGrid) {
-    if (!inBrand) {
-      const SORTS = [["brand", "Brand", "tag"], ["color", "Color", "database"], ["finish", "Finish", "sort"], ["collection", "Collection", "stash"], ["collectionType", "Collection Type", "archive"]];
-      const sortLabel = "Sort: " + SORTS.find(s => s[0] === state.sort)[1];
-      const sb = h("button", { class: "btn", "data-pop": "1", "aria-label": sortLabel, title: sortLabel }, ic("sort"), h("span", { class: "lbl" }, sortLabel));
-      sb.addEventListener("click", () => popMenu(sb, SORTS.map(s => ({ label: s[1], checked: state.sort === s[0], run: () => { state.sort = s[0]; renderAll(); } }))));
-      bar.append(h("span", { class: "anchor" }, sb));
-    }
-    bar.append(h("button", { class: "btn" + (filtersActive() ? " on" : ""), "aria-label": "Filter", title: "Filter", onclick: openFilters }, ic("filter"), h("span", { class: "lbl" }, "Filter")));
-    const selLabel = state.sel ? "Done" : "Select";
-    bar.append(h("button", { class: "btn" + (state.sel ? " on" : ""), "aria-label": selLabel + " (bulk edit)", title: selLabel, onclick: () => { if (state.sel) { exitSelect(); renderAll(); } else startSelect(); } }, ic("check"), h("span", { class: "lbl" }, selLabel)));
-    if (["stash", "wishlist", "destash"].includes(state.tab) && !inBrand)
-      bar.append(h("button", { class: "btn", "aria-label": "Download this list as CSV", title: "Download this list as CSV", onclick: exportCsv }, ic("export"), h("span", { class: "lbl" }, "CSV")));
-  }
-  box.append(bar);
-}
-
-function renderContent() {
-  const box = $("#content"); box.replaceChildren();
-  if (!state.catalog) { box.append(h("div", { class: "loading" }, "Loading the catalog…")); return; }
-  const nav = state.nav[state.nav.length - 1];
-  if (nav && nav.type === "polish") { box.append(polishDetail(BY_ID.get(nav.id))); return; }
-
-  if (nav && nav.type === "brand") box.append(brandHeader(BRANDS.find(b => b.name === nav.name)));
-  else if (state.tab === "database" && state.dbMode === "brands") { renderBrandList(box); return; }
-
-  const items = filtered();
-  const total = items.reduce((s, p) => s + (p.price || 0), 0);
-  const parts = [h("span", null, h("b", null, items.length), items.length === 1 ? " polish" : " polishes")];
-  if (["stash", "wishlist", "destash", "archive"].includes(state.tab) && !nav && total > 0) parts.push(h("span", null, "Total value ", h("b", null, MONEY.format(total))));
-  box.append(h("div", { class: "summary" }, parts));
-  if (!items.length) { const [a, b] = emptyMessage(); box.append(h("div", { class: "empty" }, h("b", null, a), b)); return; }
-  box.append(renderList(items));
-}
-
+/* database > brands */
 function renderBrandList(box) {
-  let list = BRANDS.slice();
   if (state.search) {
-    const words = foldKey(state.search).split(/\s+/).filter(Boolean);
-    const hits = P.filter(p => words.every(w => p.search.includes(w)));
+    const hits = P.filter(p => matchesSearch(p, state.search));
     if (!hits.length) { box.append(h("div", { class: "empty" }, h("b", null, "No matches"), "Try fewer words.")); return; }
     const byBrand = new Map(); hits.forEach(p => { if (!byBrand.has(p.brand.name)) byBrand.set(p.brand.name, []); byBrand.get(p.brand.name).push(p); });
-    box.append(h("div", { class: "summary" }, h("span", null, h("b", null, hits.length), hits.length === 1 ? " polish" : " polishes", ` in ${byBrand.size} brand${byBrand.size === 1 ? "" : "s"}`)));
+    box.append(h("div", { class: "summary" }, h("span", null, h("b", null, hits.length), " " + polishWord(hits.length), ` in ${byBrand.size} brand${byBrand.size === 1 ? "" : "s"}`)));
     for (const [name, ps] of [...byBrand].sort((a, b) => cmp(a[0], b[0]))) {
       const card = h("div", { class: "card" }, h("button", { class: "ghead", "aria-expanded": "true", onclick: () => openBrand(name) }, h("span", { class: "gt" }, name), h("span", { class: "n" }, ps.length)));
       ps.sort(collThenName).slice(0, 40).forEach(p => card.append(polishRow(p, { showBrand: false })));
@@ -555,45 +583,28 @@ function renderBrandList(box) {
     }
     return;
   }
-  box.append(h("div", { class: "summary" }, h("span", null, h("b", null, list.length), " brands")));
-  list.sort((a, b) => cmp(a.name, b.name));
+  box.append(h("div", { class: "summary" }, h("span", null, h("b", null, BRANDS.length), " brands")));
   const card = h("div", { class: "card" });
-  for (const b of list) card.append(h("button", { class: "brandrow", onclick: () => openBrand(b.name) },
-    brandThumb(b), h("div", null, h("div", { class: "nm" }, b.name), h("div", { class: "sub2" }, [`${b.count} polish${b.count === 1 ? "" : "es"}`, countryText(b.country)].filter(Boolean).join(" · "))), ic("chev", "chev")));
+  for (const b of [...BRANDS].sort((a, c) => cmp(a.name, c.name))) card.append(h("button", { class: "brandrow", onclick: () => openBrand(b.name) },
+    brandThumb(b), h("div", null, h("div", { class: "nm" }, b.name), h("div", { class: "sub2" }, [`${b.count} ${polishWord(b.count)}`, countryText(b.country)].filter(Boolean).join(" · "))), ic("chev", "chev")));
   box.append(card);
 }
 
-function renderAll() {
-  const nav = state.nav[state.nav.length - 1];
-  if (state.sel && ((nav && nav.type === "polish") || (state.tab === "database" && state.dbMode === "brands" && !nav))) exitSelect();
-  renderTabs(); renderBar(); renderContent(); renderBulk(); renderBack();
-}
-
-/* ---------- navigation ---------- */
-function openPolish(p) { state.nav.push({ type: "polish", id: p.id }); renderAll(); window.scrollTo({ top: 0 }); loadExtra(p); }
-function openBrand(name) {
-  state.nav.push({ type: "brand", name });
-  state.search = ""; state.filters = { finishes: new Set(), colors: new Set(), inStock: false, min: "", max: "" };
-  renderAll(); window.scrollTo({ top: 0 });
-}
-function back() { state.nav.pop(); renderAll(); }
-
-/* ---------- brand header ---------- */
+/* brand header */
 function brandHeader(b) {
   const frag = document.createDocumentFragment();
-  const country = countryText(b.country);
   frag.append(h("div", { class: "bhead" }, brandThumb(b, 64), h("div", null, h("h2", null, b.name),
-    h("div", { class: "meta" }, [`${b.count} polish${b.count === 1 ? "" : "es"}`, country].filter(Boolean).join(" · ")))));
+    h("div", { class: "meta" }, [`${b.count} ${polishWord(b.count)}`, countryText(b.country)].filter(Boolean).join(" · ")))));
   const links = h("div", { class: "socials" });
-  if (b.website) links.append(h("a", { class: "soc", href: b.website, target: "_blank", rel: "noopener" }, ic("globe"), "Website"));
+  if (b.website) links.append(h("a", { class: "soc", href: b.website, ...NEW_TAB }, ic("globe"), "Website"));
   const ig = igUrl(b.ig), fb = fbUrl(b.fb);
-  if (ig) links.append(h("a", { class: "soc", href: ig, target: "_blank", rel: "noopener" }, IG_GLYPH(), "Instagram"));
-  if (fb) links.append(h("a", { class: "soc", href: fb, target: "_blank", rel: "noopener" }, FB_GLYPH(), "Facebook group"));
+  if (ig) links.append(h("a", { class: "soc", href: ig, ...NEW_TAB }, IG_GLYPH(), "Instagram"));
+  if (fb) links.append(h("a", { class: "soc", href: fb, ...NEW_TAB }, FB_GLYPH(), "Facebook group"));
   if (links.children.length) frag.append(links);
   return frag;
 }
 
-/* ---------- polish detail ---------- */
+/* polish detail */
 function loadExtra(p) {
   // Photos and descriptions live in one small file per brand, fetched the first time a polish from it is opened.
   const bi = p.brand.idx;
@@ -605,16 +616,15 @@ function loadExtra(p) {
 }
 function photoUrls(p) {
   const ex = state.extra[p.id];
-  const urls = ex && ex[1] && ex[1].length ? ex[1] : (p.image ? [p.image] : []);
-  return urls;
+  return ex && ex[1] && ex[1].length ? ex[1] : (p.image ? [p.image] : []);
 }
 function gallery(urls, fallbackEl) {
   const wrap = h("div", { class: "gallery" });
   const n = urls.length, loop = n > 1;
-  const pages = loop ? [urls[n - 1], ...urls, urls[0]] : urls;
+  const pages = loop ? [urls[n - 1], ...urls, urls[0]] : urls;   // clones at both ends give an endless swipe
   let failures = 0;
   const track = h("div", { class: "track", tabindex: "0", "aria-label": "Photos" },
-    pages.map((u, i) => {
+    pages.map(u => {
       const slide = h("div", { class: "slide" });
       slide.append(h("img", { src: u, alt: "", referrerpolicy: "no-referrer", onerror: () => {
         slide.replaceChildren(h("div", { class: "nophoto" }, "Photo unavailable")); failures++;
@@ -641,13 +651,13 @@ function gallery(urls, fallbackEl) {
   requestAnimationFrame(() => requestAnimationFrame(() => jump(1)));
   return wrap;
 }
-function kv(k, v) { return h("div", { class: "kv" }, h("span", null, k), h("span", null, v)); }
+const kv = (k, v) => h("div", { class: "kv" }, h("span", null, k), h("span", null, v));
 
 function polishDetail(p) {
   const el = h("div", { class: "detail" });
   if (!p) return el;
   el.append(h("h2", null, p.name));
-  el.append(h("p", { class: "by" }, "by ", h("button", { onclick: () => { state.nav = state.nav.filter(n => n.type !== "polish"); const t = state.nav[state.nav.length - 1]; if (t && t.type === "brand" && t.name === p.brand.name) { renderAll(); window.scrollTo({ top: 0 }); } else openBrand(p.brand.name); } }, p.brand.name)));
+  el.append(h("p", { class: "by" }, "by ", h("button", { onclick: () => goToBrand(p.brand.name) }, p.brand.name)));
 
   const cur = statusOf(p);
   el.append(h("div", { class: "status-pick" }, STATUS_ORDER.map(s =>
@@ -665,7 +675,7 @@ function polishDetail(p) {
   if (p.pstatus) details.append(kv("Availability", PSTATUS[p.pstatus]));
   if (p.base.length) details.append(kv("Base color", [h("i", { class: "sw", style: `background:${SWATCH[p.base[0]]}` }), p.base.join(", ")]));
   if (p.other.length) details.append(kv("Accent colors", p.other.join(", ")));
-  if (p.finishes.length) details.append(kv("Finishes", p.finishes.map(f => f.replace(/\b\w/g, c => c.toUpperCase())).join(", ")));
+  if (p.finishes.length) details.append(kv("Finishes", p.finishes.map(titleCase).join(", ")));
   if (p.ctype) details.append(kv("Collection type", p.ctype));
   if (p.brand.bottle) details.append(kv("Bottle size", `${+p.brand.bottle.toFixed(1)} mL`));
   if (p.price != null) details.append(kv("Price", MONEY.format(p.price)));
@@ -679,28 +689,28 @@ function polishDetail(p) {
   const b = hashtag(p.brand.name), n = hashtag(p.name), tags = [];
   for (const t of [b + n, n, b]) if (t && !tags.includes(t)) tags.push(t);
   if (tags.length) el.append(h("div", { class: "panel" }, h("h3", null, "Find more swatches on Instagram"),
-    h("div", { class: "tagrow" }, tags.map(t => h("a", { href: `https://www.instagram.com/explore/tags/${encodeURIComponent(t)}/`, target: "_blank", rel: "noopener" }, "#" + t)))));
+    h("div", { class: "tagrow" }, tags.map(t => h("a", { href: `https://www.instagram.com/explore/tags/${encodeURIComponent(t)}/`, ...NEW_TAB }, "#" + t)))));
 
   const buy = h("div", { class: "panel" }, h("h3", null, "Where to buy"));
   if (p.url || p.price != null || p.stock != null) {
     const inner = [h("div", null, h("div", { style: "font-weight:600" }, p.brand.name), p.url ? h("div", { class: "br", style: "font-size:12px;color:var(--muted)" }, "Open the shop page") : null), h("span", { style: "margin-left:auto;text-align:right" },
       p.price != null ? h("div", null, MONEY.format(p.price)) : null,
-      p.stock === 1 ? h("div", { class: "in", style: "color:var(--good);font-size:12px" }, "In stock") : p.stock === 0 ? h("div", { style: "color:var(--bad);font-size:12px" }, "Out of stock") : null)];
-    buy.append(p.url ? h("a", { class: "linkrow", href: p.url, target: "_blank", rel: "noopener" }, inner, ic("ext", "ext")) : h("div", { class: "linkrow" }, inner));
+      p.stock === 1 ? h("div", { style: "color:var(--good);font-size:12px" }, "In stock") : p.stock === 0 ? h("div", { style: "color:var(--bad);font-size:12px" }, "Out of stock") : null)];
+    buy.append(p.url ? h("a", { class: "linkrow", href: p.url, ...NEW_TAB }, inner, ic("ext", "ext")) : h("div", { class: "linkrow" }, inner));
   } else buy.append(h("div", { class: "kv" }, h("span", null, "No listings")));
   el.append(buy);
 
   const dupes = p.dupes.map(id => BY_ID.get(id)).filter(d => d && d !== p);
   if (dupes.length) {
     const panel = h("div", { class: "panel" }, h("h3", null, "Dupes"));
-    dupes.forEach(d => panel.append(h("div", { class: "row", style: "border-top:0;border-top:1px solid var(--line)" }, h("button", { class: "main", onclick: () => { state.nav[state.nav.length - 1] = { type: "polish", id: d.id }; renderAll(); window.scrollTo({ top: 0 }); } },
+    dupes.forEach(d => panel.append(h("div", { class: "row" }, h("button", { class: "main", onclick: () => { state.nav[state.nav.length - 1] = { type: "polish", id: d.id }; renderAllTop(); } },
       thumb(d, 40), h("div", { class: "txt" }, h("div", { class: "nm" }, d.name), h("div", { class: "br" }, d.brand.name)), d.price != null ? h("div", { class: "side" }, h("span", { class: "price" }, MONEY.format(d.price))) : null))));
     el.append(panel);
   }
   return el;
 }
 
-/* ---------- filter sheet ---------- */
+/* filter sheet */
 function openFilters() {
   const layer = $("#layer"); layer.replaceChildren();
   const f = state.filters;
@@ -709,7 +719,7 @@ function openFilters() {
   const present = new Set(pool.flatMap(p => p.base));
   const colors = [...COLOR_ORDER.filter(c => present.has(c)), ...[...present].filter(c => !COLOR_ORDER.includes(c)).sort(cmp)];
   const close = () => { layer.replaceChildren(); renderAll(); };
-  const clear = h("button", { class: "btn", onclick: () => { state.filters = { finishes: new Set(), colors: new Set(), inStock: false, min: "", max: "" }; openFilters(); } }, "Clear filters");
+  const clear = h("button", { class: "btn", onclick: () => { state.filters = emptyFilters(); openFilters(); } }, "Clear filters");
   if (!filtersActive()) clear.setAttribute("disabled", "");
 
   const opt = (label, set, value, sw) => {
@@ -717,16 +727,16 @@ function openFilters() {
     b.addEventListener("click", () => { set.has(value) ? set.delete(value) : set.add(value); b.setAttribute("aria-pressed", String(set.has(value))); });
     return b;
   };
-  const group = (title, set, items, swatchOf) => {
-    const d = h("details", null, h("summary", null, title, set.size ? h("span", { class: "dot" }) : null),
-      items.length ? items.map(v => opt(v.replace(/\b\w/g, c => c.toUpperCase()), set, v, swatchOf && swatchOf(v))) : h("div", { class: "kv" }, h("span", null, "Nothing recorded yet")));
-    return d;   // collapsed by default
-  };
+  const group = (title, set, items, swatchOf) =>   // collapsed by default
+    h("details", null, h("summary", null, title, set.size ? h("span", { class: "dot" }) : null),
+      items.length ? items.map(v => opt(titleCase(v), set, v, swatchOf && swatchOf(v))) : h("div", { class: "kv" }, h("span", null, "Nothing recorded yet")));
+
   const stock = h("input", { class: "switch", type: "checkbox", id: "fstock", checked: f.inStock || null });
   stock.addEventListener("change", () => { f.inStock = stock.checked; });
   const min = h("input", { type: "text", inputmode: "decimal", placeholder: "Min", value: f.min, "aria-label": "Minimum price" });
   const max = h("input", { type: "text", inputmode: "decimal", placeholder: "Max", value: f.max, "aria-label": "Maximum price" });
-  min.addEventListener("input", () => { f.min = min.value; }); max.addEventListener("input", () => { f.max = max.value; });
+  min.addEventListener("input", () => { f.min = min.value; });
+  max.addEventListener("input", () => { f.max = max.value; });
 
   const sheet = h("div", { class: "sheet", role: "dialog", "aria-label": "Filter" },
     h("div", { class: "hd" }, clear, h("b", null, "Filter"), h("button", { class: "btn primary", onclick: close }, "Done")),
@@ -735,19 +745,36 @@ function openFilters() {
       h("div", { class: "hint" }, "Polishes with no listed price are hidden while a price filter is on.")),
     group("Finish", f.finishes, finishes),
     group("Color", f.colors, colors, v => SWATCH[v]));
-  const back = h("div", { class: "sheet-back", onclick: e => { if (e.target === back) close(); } }, sheet);
-  layer.append(back);
+  const backdrop = h("div", { class: "sheet-back", onclick: e => { if (e.target === backdrop) close(); } }, sheet);
+  layer.append(backdrop);
 }
 
-/* ---------- CSV export ---------- */
-function csvField(v) { v = String(v ?? ""); return /[",\r\n]/.test(v) ? `"${v.replace(/"/g, '""')}"` : v; }
-const csvHeader = ["ID", "Brand", "Name", "Collection", "Collection Type", "Released", "Base Colors", "Accent Colors", "Finishes", "Price", "Price per mL", "Stock", "Product Status", "Link"];
+/* ---------- 9. navigation ---------- */
+function switchTab(id) {
+  exitSelect(); state.tab = id; state.nav = []; state.search = ""; state.sort = "brand"; state.filters = emptyFilters();
+  renderAllTop();
+}
+function openPolish(p) { state.nav.push({ type: "polish", id: p.id }); renderAllTop(); loadExtra(p); }
+function openBrand(name) {
+  state.nav.push({ type: "brand", name });
+  state.search = ""; state.filters = emptyFilters();
+  renderAllTop();
+}
+// From a polish page: drop the polish pages and show its brand (reusing the brand page if it's already underneath).
+function goToBrand(name) {
+  state.nav = state.nav.filter(n => n.type !== "polish");
+  const t = currentNav();
+  if (t && t.type === "brand" && t.name === name) renderAllTop(); else openBrand(name);
+}
+function back() { state.nav.pop(); renderAll(); }
+
+/* ---------- 10. CSV import / export ---------- */
+const CSV_HEADER = ["ID", "Brand", "Name", "Collection", "Collection Type", "Released", "Base Colors", "Accent Colors", "Finishes", "Price", "Price per mL", "Stock", "Product Status", "Link"];
+const csvField = v => { v = String(v ?? ""); return /[",\r\n]/.test(v) ? `"${v.replace(/"/g, '""')}"` : v; };
 const csvRow = p => [p.id, p.brand.name, p.name, p.collection || "", p.ctype || "", releaseText(p) || "", p.base.join(", "), p.other.join(", "),
-  p.finishes.map(f => f.replace(/\b\w/g, c => c.toUpperCase())).join(", "), p.price != null ? p.price.toFixed(2) : "", p.ppm != null ? p.ppm.toFixed(2) : "",
+  p.finishes.map(titleCase).join(", "), p.price != null ? p.price.toFixed(2) : "", p.ppm != null ? p.ppm.toFixed(2) : "",
   p.stock === 1 ? "In stock" : p.stock === 0 ? "Out of stock" : "", p.pstatus ? PSTATUS[p.pstatus] : "", p.url || ""];
-const csvText = list => String.fromCharCode(0xFEFF) + [csvHeader, ...list.map(csvRow)].map(r => r.map(csvField).join(",")).join("\r\n") + "\r\n";
-const listOf = s => P.filter(p => statusOf(p) === s).sort((a, b) => cmp(a.brand.name, b.brand.name) || cmp(a.name, b.name));
-const today = () => new Date().toISOString().slice(0, 10);
+const csvText = list => "﻿" + [CSV_HEADER, ...list.map(csvRow)].map(r => r.map(csvField).join(",")).join("\r\n") + "\r\n";
 
 // Saves a file: through Claude's download prompt when the page runs inside claude.ai, otherwise a normal browser download.
 async function saveFile(filename, data) {
@@ -765,10 +792,17 @@ async function exportCsv() {
   if (!list.length) { toast("This list is empty."); return; }
   await saveFile(`${STATUS[state.tab].label}-${today()}.csv`, csvText(list));
 }
-/* ---------- import (local file) ---------- */
+async function exportBackup() {
+  if (typeof JSZip === "undefined") { toast("The backup tool didn't load. Check your connection and reload."); return; }
+  const zip = new JSZip(); let n = 0;
+  for (const s of STATUS_ORDER) { const list = listOf(s); if (list.length) { zip.file(`${s}.csv`, csvText(list)); n += list.length; } }
+  if (!n) { toast("Your lists are empty, so there's nothing to back up."); return; }
+  await saveFile(`polish-backup-${today()}.zip`, await zip.generateAsync({ type: "blob" }));
+}
+
 function parseCsv(text) {
   const rows = []; let row = [], f = "", q = false;
-  text = text.replace(/^\uFEFF/, "");
+  text = text.replace(/^﻿/, "");
   for (let i = 0; i < text.length; i++) {
     const c = text[i];
     if (q) { if (c === '"') { if (text[i + 1] === '"') { f += '"'; i++; } else q = false; } else f += c; }
@@ -791,14 +825,13 @@ function importCsv(text, status, tally) {
   const iId = head.indexOf("id"), iBrand = head.indexOf("brand"), iName = head.indexOf("name");
   if (iBrand < 0 || iName < 0) { tally.bad++; return; }
   for (const r of rows.slice(1)) {
-    const p = BY_KEY.get(foldKey((r[iBrand] || "").trim() + "|" + (r[iName] || "").trim()))
-      || (iId >= 0 && BY_ID.get(Number(r[iId])) && foldKey(BY_ID.get(Number(r[iId])).name) === foldKey((r[iName] || "").trim()) ? BY_ID.get(Number(r[iId])) : null);
+    const p = findPolish(iId >= 0 ? r[iId] : NaN, (r[iBrand] || "").trim(), (r[iName] || "").trim());
     if (p) { state.lists.set(p.key, status); tally.ok++; } else tally.miss++;
   }
 }
 async function importFiles(files) {
   const tally = { ok: 0, miss: 0, bad: 0 };
-  const fallback = ["stash", "wishlist", "destash", "archive"].includes(state.tab) ? state.tab : "stash";
+  const fallback = STATUS_ORDER.includes(state.tab) ? state.tab : "stash";
   try {
     for (const file of files) {
       if (/\.zip$/i.test(file.name)) {
@@ -812,28 +845,42 @@ async function importFiles(files) {
     }
   } catch (e) { toast("Couldn't read that file."); return; }
   if (tally.ok) { persist(); renderAll(); }
-  const parts = [tally.ok ? `Imported ${tally.ok} polish${tally.ok === 1 ? "" : "es"}` : "Nothing imported"];
+  const parts = [tally.ok ? `Imported ${tally.ok} ${polishWord(tally.ok)}` : "Nothing imported"];
   if (tally.miss) parts.push(`${tally.miss} not found in the catalog`);
   if (tally.bad) parts.push(`${tally.bad} file${tally.bad === 1 ? "" : "s"} weren't in the expected format`);
   toast(parts.join(" · "));
 }
-async function exportBackup() {
-  if (typeof JSZip === "undefined") { toast("The backup tool didn't load. Check your connection and reload."); return; }
-  const zip = new JSZip(); let n = 0;
-  for (const s of STATUS_ORDER) { const list = listOf(s); if (list.length) { zip.file(`${s}.csv`, csvText(list)); n += list.length; } }
-  if (!n) { toast("Your lists are empty, so there's nothing to back up."); return; }
-  await saveFile(`polish-backup-${today()}.zip`, await zip.generateAsync({ type: "blob" }));
+
+/* ---------- 11. start-up ---------- */
+// Wires the static header buttons and global listeners that live in index.html.
+function initChrome() {
+  let themeMode = store.get("theme") || "system";
+  applyTheme(themeMode);
+  $("#themeBtn").addEventListener("click", () => {
+    themeMode = themeMode === "system" ? "light" : themeMode === "light" ? "dark" : "system";
+    store.set("theme", themeMode); applyTheme(themeMode);
+  });
+  $("#backupBtn").replaceChildren(ic("export"));
+  $("#backupBtn").addEventListener("click", exportBackup);
+  $("#importBtn").replaceChildren(ic("import"));
+  $("#importBtn").addEventListener("click", () => $("#importFile").click());
+  $("#importFile").addEventListener("change", e => { const fs = [...e.target.files]; e.target.value = ""; if (fs.length) importFiles(fs); });
+  $("#backBtn").replaceChildren(ic("back"));
+  $("#backBtn").addEventListener("click", back);
+
+  document.addEventListener("click", e => { if (openPop && !openPop.contains(e.target) && !e.target.closest("[data-pop]")) closePop(); });
+  document.addEventListener("keydown", e => { if (e.key === "Escape") closePop(); });
+  window.addEventListener("scroll", closePop, { passive: true });
 }
 
-/* ---------- start ---------- */
 async function start() {
-  state.lists = loadLocal();                  // placeholder until the catalog is read; re-resolved below
+  initChrome();
   let data;
   try { data = await (await fetch("dbs/catalog.json")).json(); }
   catch (e) { $("#content").replaceChildren(h("div", { class: "empty" }, h("b", null, "The catalog didn't load"), "Reload the page to try again.")); return; }
   buildCatalog(data);
   state.catalog = true;
-  state.lists = loadLocal();
+  state.lists = loadLocal();      // needs the catalog to resolve saved entries
   renderNotice(); renderAll();
   initAccount();
 }
