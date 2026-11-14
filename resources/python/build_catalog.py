@@ -2,8 +2,23 @@
 Run from the repo root:  python3 tools/build_catalog.py
 Mirrors the app's CatalogParser so both versions read the data the same way."""
 import json, re, glob, html, os
+from pathlib import Path
 
-ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+ROOT = None
+for candidate in [
+    Path(__file__).resolve().parents[0],
+    Path(__file__).resolve().parents[1],
+    Path(__file__).resolve().parents[2],
+    Path.cwd(),
+]:
+    if (candidate / "dbs").exists() or (candidate / "index.html").exists():
+        ROOT = candidate
+        break
+if ROOT is None:
+    ROOT = Path(__file__).resolve().parents[2]
+ROOT = ROOT.resolve()
+
+SOURCE_DIR = ROOT / "jsonDB"
 
 KNOWN = ["Black","Blue","Brown","Clear","Gold","Gray","Green","Orange","Pink","Purple","Red","Silver","White","Yellow"]
 LOOK = {c.lower(): c for c in KNOWN}
@@ -29,11 +44,40 @@ def finishes(raw):
         if f not in seen: seen.add(f); o.append(f)
     return sorted(o)
 def images(raw):
+    def resolve_local(value):
+        t = str(value or "").strip().strip('"\'')
+        if not t: return None
+        t = t.replace("\\", "/")
+        if t.startswith(("http://", "https://", "data:")):
+            return None
+        if t.startswith("resources/"):
+            full = os.path.join(ROOT, t)
+            if os.path.isfile(full): return t
+        rel = t.lstrip("./")
+        if rel.startswith("/"):
+            rel = rel.lstrip("/")
+        if rel.startswith("resources/"):
+            full = os.path.join(ROOT, rel)
+            if os.path.isfile(full): return rel
+        candidate = os.path.join("resources", rel)
+        full = os.path.join(ROOT, candidate)
+        if os.path.isfile(full): return candidate.replace("\\", "/")
+        base = os.path.basename(rel)
+        for root, _, files in os.walk(os.path.join(ROOT, "resources")):
+            for name in files:
+                if name.lower() == base.lower():
+                    relpath = os.path.relpath(os.path.join(root, name), ROOT)
+                    return relpath.replace("\\", "/")
+        return None
+
     o = []
-    for t in (raw or "").split(", "):
-        t = t.strip()
-        if t.startswith("http") and re.search(r"\.(jpe?g|png|webp|gif|avif|heic)", t, re.I) and t not in o:
-            o.append(t)
+    values = raw if isinstance(raw, (list, tuple)) else re.split(r"\s*,\s*", str(raw or ""))
+    for value in values:
+        t = str(value or "").strip()
+        if not t: continue
+        loc = resolve_local(t)
+        if loc and loc not in o:
+            o.append(loc)
     return o
 def local_logo(raw):
     """A bare name like "anlac" refers to a file in resources/ (any of svg/png/webp/avif/jpg/jpeg/gif)."""
@@ -100,10 +144,18 @@ for d in bj:
     }
 
 recs = []
-for f in sorted(glob.glob(os.path.join(ROOT, "jsonDB", "*.json"))):
-    d = json.load(open(f, encoding="utf-8"))
-    recs += d["polishes"] if isinstance(d, dict) else d
-recs.sort(key=lambda r: ((r.get("brand") or "").lower(), (r.get("name") or "").lower()))
+def load_recs():
+    if not SOURCE_DIR.exists():
+        raise FileNotFoundError(f"Missing data source folder: {SOURCE_DIR}")
+    recs = []
+    for f in sorted(SOURCE_DIR.glob("*.json")):
+        with open(f, encoding="utf-8") as fh:
+            d = json.load(fh)
+        recs += d["polishes"] if isinstance(d, dict) else d
+    return recs
+
+recs = load_recs()
+recs.sort(key=lambda r: ((r.get("brand") or "").lower() if isinstance(r, dict) else (r["brand"] or "").lower(), (r.get("name") or "").lower() if isinstance(r, dict) else (r["name"] or "").lower()))
 
 bnames, bidx, rows, extra, seen = [], {}, [], {}, set()
 for r in recs:
@@ -118,7 +170,7 @@ for r in recs:
     year = num(r.get("release_year")); year = int(year) if year and 1980 <= year <= 2100 else None
     price = num(r.get("price")); price = round(price, 2) if price and price > 0 else None
     ps = (r.get("status") or "").strip().lower()
-    imgs = images(r.get("image_urls"))
+    imgs = images(r.get("cropped_img"))
     rows.append([
         pid, bidx[disp], (r.get("name") or "").strip() or "Unnamed", (r.get("collection") or "").strip() or None, year,
         colors(r.get("base_color")), colors(r.get("other_colors")), finishes(r.get("finish")), ctype, price, None,
