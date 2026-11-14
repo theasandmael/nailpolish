@@ -2,8 +2,8 @@
 """
 Cron job script to scrape brand stores using universalScraper,
 update stock statuses and prices, compare with previous JSON data,
-detect newly added products across all brands, and send a single 
-consolidated email notification digest using encrypted environment variables.
+detect newly added products across all brands, and send a single
+consolidated email notification digest through an unauthenticated SMTP relay.
 """
 
 import os
@@ -17,14 +17,10 @@ import universalScraper
 DATA_DIR = "data"            # Directory where brand JSON files are stored
 BRANDS_CONFIG = "brands.json" # JSON file mapping brand names to store URLs
 
-# Encrypted credentials/settings pulled securely from Environment Variables
-EMAIL_SENDER = os.environ.get("EMAIL_SENDER")
-EMAIL_PASSWORD = os.environ.get("EMAIL_APP_PASSWORD")
-EMAIL_RECIPIENT = os.environ.get("EMAIL_RECIPIENT")  # Encrypted secret
-
-SMTP_SERVER = "smtp.gmail.com"
-SMTP_PORT = 587
-
+# Configure an SMTP relay that permits unauthenticated delivery.
+SMTP_SERVER = os.environ.get("SMTP_SERVER")
+SMTP_PORT = int(os.environ.get("SMTP_PORT", "25"))
+EMAIL_RECIPIENT = os.environ.get("EMAIL_RECIPIENT")
 
 def load_brands():
     """Loads brand URLs from configuration file."""
@@ -35,11 +31,16 @@ def load_brands():
         "ExampleBrand": "https://www.lacquertracker.com/brand/example"
     }
 
-
 def send_single_digest_email(new_products_dict):
-    """Sends exactly ONE consolidated email notification using secure env variables."""
-    if not new_products_dict or not EMAIL_RECIPIENT:
-        print("[!] Email recipient not configured securely in environment variables.")
+    """Send one consolidated digest through an unauthenticated SMTP relay."""
+    if not new_products_dict:
+        return
+
+    if not EMAIL_RECIPIENT:
+        print("[!] EMAIL_RECIPIENT is not configured.")
+        return
+    if not SMTP_SERVER:
+        print("[!] SMTP_SERVER must be set to an unauthenticated SMTP relay.")
         return
 
     subject = "💅 Nail Polish Alert: New Products Added Digest"
@@ -56,17 +57,13 @@ def send_single_digest_email(new_products_dict):
 
     msg = MIMEMultipart("alternative")
     msg["Subject"] = subject
-    msg["From"] = EMAIL_SENDER
     msg["To"] = EMAIL_RECIPIENT
     msg.attach(MIMEText(html_content, "html"))
 
     try:
-        server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
-        server.starttls()
-        server.login(EMAIL_SENDER, EMAIL_PASSWORD)
-        server.sendmail(EMAIL_SENDER, EMAIL_RECIPIENT, msg.as_string())
-        server.quit()
-        print(f"\n[+] Single digest notification email successfully sent securely.")
+        with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
+            server.sendmail("", EMAIL_RECIPIENT, msg.as_string())
+        print("\n[+] Single digest notification email sent through the relay.")
     except Exception as e:
         print(f"\n[!] Error sending email: {e}")
 
