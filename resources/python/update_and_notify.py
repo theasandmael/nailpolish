@@ -19,7 +19,7 @@ BRANDS_CONFIG = "brands.json" # JSON file mapping brand names to store URLs
 
 # Configure an SMTP relay that permits unauthenticated delivery.
 SMTP_SERVER = os.environ.get("SMTP_SERVER")
-SMTP_PORT = int(os.environ.get("SMTP_PORT", "25"))
+SMTP_PORT = int((os.environ.get("SMTP_PORT") or "").strip() or "25")
 EMAIL_RECIPIENT = os.environ.get("EMAIL_RECIPIENT")
 
 def load_brands():
