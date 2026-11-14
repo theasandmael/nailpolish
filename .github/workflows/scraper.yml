@@ -24,11 +24,11 @@ jobs:
 
       - name: Run Scraper & Notifier
         env:
-          EMAIL_SENDER: ${{ secrets.EMAIL_SENDER }}
-          EMAIL_APP_PASSWORD: ${{ secrets.EMAIL_APP_PASSWORD }}
+          SMTP_SERVER: ${{ secrets.SMTP_SERVER }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
           EMAIL_RECIPIENT: ${{ secrets.EMAIL_RECIPIENT }}
         run: |
-          python update_and_notify.py
+          python resources/python/update_and_notify.py
 
       - name: Commit and Push Changes to GitHub Pages
         run: |
